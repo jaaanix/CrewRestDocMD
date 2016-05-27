@@ -28,6 +28,7 @@ Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform
 | Komplettes .NET Framework nutzbar?                             | Nein  | Ja   |
 | #if-Syntax[^ifOS] für plattformspezifischen Code nutzbar?      | Nein  | Ja   |
 | plattformspezifischer Code benötigt IOC[^IOC]                  | Ja    | Nein |
+
 Table: Unterschiede zwischen PCL und SAP Projekten
 [@PCLvsSAPTable]
 
@@ -64,14 +65,29 @@ Table: Eingesetzte Software und APIs
 
 ![checkmark](img/Checked-50.png "Checked")
 
+# SOAP
+- Simple Object Access Protocol
+- XML-Format
+- Operations
+- Request/Response
+
 # Projektarchitektur
+- **Data** Konsumieren des SOAP-Service
+- **Models** Abbilden von Daten aus dem SOAP-Service
+- **Views** Abbilden der Benutzoberfläche in Form von Pages
+
+# XAML vs. Code
+# Page Layouts
+![Xamarin.Forms Layouts](img/xamarin_layouts.png "Xamarin.Forms Layouts")
+
 # Wie funktioniert das native Deployment der unterschiedlichen Betriebssysteme/Plattformen
+- Windows UWP direkt auf Windows 10
+- Android via USB-Debug Mode
+- iOS via Remote Login auf Mac OSX und installiertem XCode sowie Xamarin Studio
+
 ## Android
 ## Win10
 ## iOS
-# PCL
-# XAML vs. Code
-# Page Layouts
 # Implementierung
 ```csharp
 public void lol(int i) {
@@ -79,13 +95,20 @@ private ImageSource bildquelle;
 }
 ```
 ## SOAP
-## Plattformspezifisches Verhalten
+- HTTPClient
+- Aus Objekten XML parsen und SOAP-Request senden
+- Aus SOAP-Response XML zu Objekt parsen
+
+## Plattformspezifisches Verhalten in XAML
+- XAML OnPlatform Tag
 ## Bindings
 ## Updaten von Daten
 ## Anträge ListView
 ## Filtern der Liste
 ## Dynamisches hinzufügen von Komponenten
 ## Validierung von Eingaben
-## DataTrigger
+### DataTrigger
+### Behavior
 ## EmbeddedResource
+Plattformübergreifendes Anzeigen von Bildern
 # Literatur
