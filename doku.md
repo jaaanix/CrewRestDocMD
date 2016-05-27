@@ -15,26 +15,27 @@ abstract: |
 
 
 # Erstellung einer Cross-Plattform Applikation
-Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer Blank App[^BlankApp] Xamarin.Forms Portable und Xamarin.Forms Shared unterschieden [@MicrosoftXamarinBook S. 29-31].
-
-In beiden Fällen ist der in C# geschriebene Code Platformübergreifend nutzbar, jedoch gibt er gewisse Unterschiede. Im Falle eines **Xamarin.Forms Portable (Portable Class Library (PCL))** Projekts ist der Code in einer dynamischen, verlinkten Codebibliothek zusammengefasst und wird von den platformspezifischen Projekten referenziert und zu Laufzeit verfügbar gemacht. Bei einem **Xamarin.Forms Shared (Shared Asset Pro-ject (SAP))** Projekt hingegen, wird der gemeinsame Code jedem der einzelnen Projekte bei einem Buildvorgang hinzugefügt.
-
-Ein mögliches Problem bei einem PCL Projekt sind die von Platform zu Platform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach Zielplatformen eine nur sehr eingeschränkte Version des .NET Frameworks genutzt werden kann. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann. Zum Beispiel der in CrewRest verwendete HTTPClient wurde via einem NuGet[^NuGet] Package nachinstalliert.
-
-|                                           | PCL | SAP |
-|-------------------------------------------|-----|-----|
-| Full Access to .NET Framework             | No  | Yes |
-| #ifdef for platform-specific code         | No  | Yes |
-| Platform-specific code requires IOC[^IOC] | Yes | No  |
-Table: Unterschiede zwischen PCL und SAP Projekten
-[@PCLvsSAPTable]
+Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer Blank App[^BlankApp] Xamarin.Forms Portable und Xamarin.Forms Shared unterschieden.
 
 Im Falle der CrewRest Applikation wurde sich aufgrund von Unwissenheit für das standardmäßig ausgewählte PCL Projekt entschieden.
 
-## Wann kommt PCL und wann kommt SAP zum Einsatz?
-...
+In beiden Fällen ist der in C# geschriebene Code Plattformübergreifend nutzbar, jedoch gibt er gewisse Unterschiede. Im Falle eines **Xamarin.Forms Portable (Portable Class Library (PCL))** Projekts ist der Code in einer dynamischen, verlinkten Codebibliothek zusammengefasst und wird von den plattformspezifischen Projekten referenziert und zu Laufzeit verfügbar gemacht. Bei einem **Xamarin.Forms Shared (Shared Asset Pro-ject (SAP))** Projekt hingegen, wird der gemeinsame Code jedem der einzelnen Projekte bei einem Buildvorgang hinzugefügt.[@MicrosoftXamarinBook S. 29-31]
 
-[^IOC]: Inversion Of Control, Alternative zu #ifdef für platformspezifischen Code.
+Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann. Zum Beispiel der in CrewRest verwendete HTTPClient wurde via einem NuGet[^NuGet] Package nachinstalliert und kann plattformübergreifend im Code verwendet werden.
+
+|                                                                | PCL   | SAP  |
+|----------------------------------------------------------------|-------|------|
+| Komplettes .NET Framework nutzbar?                             | Nein  | Ja   |
+| #if-Syntax[^ifOS] für plattformspezifischen Code nutzbar?      | Nein  | Ja   |
+| plattformspezifischer Code benötigt IOC[^IOC]                  | Ja    | Nein |
+Table: Unterschiede zwischen PCL und SAP Projekten
+[@PCLvsSAPTable]
+
+
+## Wann kommt PCL und wann kommt SAP zum Einsatz?
+
+[^ifOS]: Meachanismus in SAP Projekten um plattformspezifischen Code auszuführen
+[^IOC]: Inversion Of Control, Alternative zu #if-Syntax für plattformspezifischen Code in PCL Projekten.
 [^NuGet]: Packet Verwaltung von Visual Studio 2015.
 [^BlankApp]: Ein neues, leeres Projekt für mehrere Zielbetriebssyssteme.
 
@@ -53,18 +54,18 @@ Table: Hardware und Betriebssysteme
 
 # Benötigte Software (APIs, Tools, IDEs, Emulatoren, Simulatoren)
 
-| Software           | Art | Version             | Zweck                                        |
-|--------------------|-----|---------------------|----------------------------------------------|
-| Viusal Studio 2015 | IDE | 2015 xxx            | Entwicklung der Applikation                  |
-| Android API        | API | 6.0 Marshmallow xxx | Benötigt für Deployment auf Android Platform |
-| iOS API            | API | xxx                 | Benötigt für Deployment auf iOS Platform     |
+| Software           | Art | Version             | Zweck                                         |
+|--------------------|-----|---------------------|-----------------------------------------------|
+| Viusal Studio 2015 | IDE | 2015 xxx            | Entwicklung der Applikation                   |
+| Android API        | API | 6.0 Marshmallow xxx | Benötigt für Deployment auf Android Plattform |
+| iOS API            | API | xxx                 | Benötigt für Deployment auf iOS Plattform     |
 
 Table: Eingesetzte Software und APIs
 
 ![checkmark](img/Checked-50.png "Checked")
 
 # Projektarchitektur
-# Wie funktioniert das native Deployment der unterschiedlichen Betriebssysteme/Platformen
+# Wie funktioniert das native Deployment der unterschiedlichen Betriebssysteme/Plattformen
 ## Android
 ## Win10
 ## iOS
@@ -78,7 +79,7 @@ private ImageSource bildquelle;
 }
 ```
 ## SOAP
-## Platformspezifisches Verhalten
+## Plattformspezifisches Verhalten
 ## Bindings
 ## Updaten von Daten
 ## Anträge ListView
