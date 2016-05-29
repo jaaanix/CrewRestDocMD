@@ -23,7 +23,7 @@ In beiden Fällen ist der in C# geschriebene Code Plattformübergreifend nutzbar
 
 Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann. Zum Beispiel der in CrewRest verwendete HTTPClient wurde via einem NuGet[^NuGet] Package nachinstalliert und kann plattformübergreifend im Code verwendet werden.
 
-Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Kapitel "SOAP") konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Meachanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen von SOAP Requests und Responses kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisirten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
+Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Kapitel [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Meachanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen von SOAP Requests und Responses kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisirten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
 
 |                                                                | PCL   | SAP  |
 |----------------------------------------------------------------|-------|------|
@@ -90,7 +90,7 @@ Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luf
 - **Views** Abbilden der Benutzoberfläche in Form von Pages
 
 # XAML vs. Code
-Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei unterschiedliche Arten, entweder die Pages werden via XAML deklarativ entworfen oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingsetzten Framework ab. Durch die hierachische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so viel wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. DataTrigger können so bis zu einer gewissen Komplexheit angelegt werden (siehe Kapitel "DataTrigger").
+Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei unterschiedliche Arten, entweder die Pages werden via XAML deklarativ entworfen oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingsetzten Framework ab. Durch die hierachische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so viel wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. DataTrigger können so bis zu einer gewissen Komplexheit angelegt werden (siehe Kapitel [DataTrigger]).
 
 [^wpf]: Ein von Microsoft angebotenes GUI Framework auf Basis von .NET.
 
@@ -103,8 +103,14 @@ Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei untersch
 - iOS via Remote Login auf Mac OSX und installiertem XCode sowie Xamarin Studio
 
 ## Android
+text
+
 ## Win10
+text
+
 ## iOS
+text
+
 # Implementierung
 ```csharp
 public void lol(int i) {
@@ -119,13 +125,30 @@ private ImageSource bildquelle;
 ## Plattformspezifisches Verhalten in XAML
 - XAML OnPlatform Tag
 ## Bindings
+text
+
 ## Updaten von Daten
+text
+
 ## Anträge ListView
+text
+
 ## Filtern der Liste
+text
+
 ## Dynamisches hinzufügen von Komponenten
+text
+
 ## Validierung von Eingaben
+text
+
 ### DataTrigger
+text
+
 ### Behavior
+text
+
 ## EmbeddedResource
 Plattformübergreifendes Anzeigen von Bildern
+
 # Literatur
