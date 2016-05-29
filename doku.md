@@ -21,10 +21,6 @@ Im Falle der CrewRest Applikation wurde sich aufgrund von Unwissenheit für das 
 
 In beiden Fällen ist der in C# geschriebene Code Plattformübergreifend nutzbar, jedoch gibt er gewisse Unterschiede. Im Falle eines **Xamarin.Forms Portable (Portable Class Library (PCL))** Projekts ist der Code in einer dynamischen, verlinkten Codebibliothek zusammengefasst und wird von den plattformspezifischen Projekten referenziert und zu Laufzeit verfügbar gemacht. Bei einem **Xamarin.Forms Shared (Shared Asset Pro-ject (SAP))** Projekt hingegen, wird der gemeinsame Code jedem der einzelnen Projekte bei einem Buildvorgang hinzugefügt.[@MicrosoftXamarinBook S. 29-31]
 
-Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann. Zum Beispiel der in CrewRest verwendete HTTPClient wurde via einem NuGet[^NuGet] Package nachinstalliert und kann plattformübergreifend im Code verwendet werden.
-
-Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Kapitel [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Meachanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen von SOAP Requests und Responses kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisirten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
-
 |                                                                | PCL   | SAP  |
 |----------------------------------------------------------------|-------|------|
 | Komplettes .NET Framework nutzbar?                             | Nein  | Ja   |
@@ -34,7 +30,9 @@ Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der C
 Table: Unterschiede zwischen PCL und SAP Projekten
 [@PCLvsSAPTable]
 
-## Wann kommt PCL und wann kommt SAP zum Einsatz?
+Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann. Zum Beispiel der in CrewRest verwendete HTTPClient wurde via einem NuGet[^NuGet] Package nachinstalliert und kann plattformübergreifend im Code verwendet werden.
+
+Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Kapitel [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Meachanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen von SOAP Requests und Responses kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisirten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
 
 [^ifOS]: Meachanismus in SAP Projekten um plattformspezifischen Code auszuführen
 [^IOC]: Inversion Of Control, Alternative zu #if-Syntax für plattformspezifischen Code in PCL Projekten.
@@ -42,7 +40,6 @@ Table: Unterschiede zwischen PCL und SAP Projekten
 [^BlankApp]: Ein neues, leeres Projekt für mehrere Zielbetriebssyssteme.
 
 # Eingesetzte Hardware
-
 Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist folgende Hardware zum Einsatz gekommen.
 
 | Gerät           | OS                         | Version         | Zweck                                        |
@@ -66,8 +63,6 @@ Table: Hardware und Betriebssysteme
 | iOS API            | API | ???                    | Benötigt für Deployment auf iOS Plattform     |
 
 Table: Eingesetzte Software und APIs
-
-![checkmark](img/Checked-50.png "Checked")
 
 # SOAP
 
