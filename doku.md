@@ -9,10 +9,10 @@ documentclass: scrreprt
 bibliography: literatur.bib
 csl: din-1505-2.csl
 abstract: |
- Im Folgenden Praxisprojekt ist es Ziel eine Cross-Plattform Applikation für Windows 10, Android und iOS zu erstellen. Als Technologien soll Microsoft UWP und Xamarin zum Einsatz kommen. Somit soll aus einer gemeinsamen Codebasis eine Applikation, lauffähig auf verschiedenen Betriebssysteme erzeugt werden. Als Programmiersprache kommt C# zum Einsatz. Der fachliche Hintergrund ist es, ein System für die Mitarbeiter einer Luftfahrtgesellschaft zu entwickeln, um Urlaubsanträge oder allgemeiner: Anträge für Abwesenheiten erstellen zu können und dessen Status einsehen zu können. Bei Möglichkeit ist es erwünschenswert eine Art Kalenderüberischt in der Applikation anzuzeigen, welche die Abwesenheitslage aller Mitarbeiter darstellt, um mögliche Zeiträume für neue Abwesenheitsanträge sinnvoll anlegen zu können.
+ Im Folgenden Praxisprojekt ist es Ziel die Cross-Plattform Applikation "CrewRest" für Windows 10, Android und iOS zu erstellen. Als Technologien soll Microsoft UWP und Xamarin zum Einsatz kommen. Somit soll aus einer gemeinsamen Codebasis eine Applikation, lauffähig auf verschiedenen Betriebssysteme erzeugt werden. Als Programmiersprache kommt C# zum Einsatz. Der fachliche Hintergrund ist es, ein System für die Mitarbeiter einer Luftfahrtgesellschaft zu entwickeln, um Urlaubsanträge oder allgemeiner: Anträge für Abwesenheiten erstellen zu können und dessen Status einsehen zu können. Bei Möglichkeit ist es erwünschenswert eine Art Kalenderüberischt in der Applikation anzuzeigen, welche die Abwesenheitslage aller Mitarbeiter darstellt, um mögliche Zeiträume für neue Abwesenheitsanträge sinnvoll anlegen zu können.
 ...
 ---
-
+# Wie Xamarin funktioniert
 
 # Erstellung einer Cross-Plattform Applikation
 Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer Blank App[^BlankApp] Xamarin.Forms Portable und Xamarin.Forms Shared unterschieden.
@@ -42,15 +42,12 @@ Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der C
 # Eingesetzte Hardware
 Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist folgende Hardware zum Einsatz gekommen.
 
-| Gerät           | OS                         | Version         | Zweck                                        |
-|-----------------|----------------------------|-----------------|----------------------------------------------|
-| iPhone 5        | iOS                        | 9.3.1           | Testen der App auf iOS                       |
-|---------------------------------------------------------------------------------------------------------------|
-| Asus Nexus 7    | Android                    | 6.0 Marshmallow | Testen der App auf Android                   |
-|---------------------------------------------------------------------------------------------------------------|
-| Virtual Machine | Windows 10 Insider Preview | Build 1511      | Entwickeln und Testen der App auf Windows 10 |
-|---------------------------------------------------------------------------------------------------------------|
-| MacBook Pro     | Mac OSX                    | ???             | Kompilieren und deployen der App für iOS     |
+| Gerät           | OS                         | Version         | Zweck                                  |
+|-----------------|------------------------|-----------------|----------------------------------------|
+| iPhone 5        | iOS                    | 9.3.1           | Testen der App auf iOS                 |
+| Asus Nexus 7    | Android                | 6.0 Marshmallow | Testen der App auf Android             |
+| Virtual Machine | Win 10 Insider Preview | Build 1511      | Entwickeln & Testen der App auf Win 10 |
+| MacBook Pro     | Mac OSX                | ???             | Kompilieren & deployen der App für iOS |
 
 Table: Hardware und Betriebssysteme
 
@@ -65,7 +62,6 @@ Table: Hardware und Betriebssysteme
 Table: Eingesetzte Software und APIs
 
 # SOAP
-
 Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Servives erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus belibigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
 
 [^xmlFormat]: Extensible Markup Language Format, ist eine Auszeichnungssprache für den plattform- und implementationsunabhängigen Austausch von Daten zwischen Computersystemen.
@@ -80,9 +76,14 @@ Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luf
 
 
 # Projektarchitektur
-- **Data** Konsumieren des SOAP-Service
-- **Models** Abbilden von Daten aus dem SOAP-Service
-- **Views** Abbilden der Benutzoberfläche in Form von Pages
+- **Data**
+    - Enthält Logik zum ansprechen/konsumieren der SOAP Services.
+- **Models**
+    - Enthält C# Klassen mit Properties für die benötigten Attribute aus validen XML-Objekten für Requests und Responses.
+- **Views**
+    - Enthält in der die in CrewRest benötigten XAML Pages und deren C# Code-Behind Klassen[^codeBehind]
+
+[^codeBehind]: Einer XAML Page zugehörige C# Klasse um dessen Logik zu implementieren.
 
 # XAML vs. Code
 Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei unterschiedliche Arten, entweder die Pages werden via XAML deklarativ entworfen oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingsetzten Framework ab. Durch die hierachische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so viel wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. DataTrigger können so bis zu einer gewissen Komplexheit angelegt werden (siehe Kapitel [DataTrigger]).
@@ -90,6 +91,7 @@ Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei untersch
 [^wpf]: Ein von Microsoft angebotenes GUI Framework auf Basis von .NET.
 
 # Page Layouts
+Xamarin.Forms bietet mit der **Views** Subklasse **Layouts** folgende Page-Layouts:
 ![Xamarin.Forms Layouts](img/xamarin_layouts.png "Xamarin.Forms Layouts")
 
 # Wie funktioniert das native Deployment der unterschiedlichen Betriebssysteme/Plattformen
