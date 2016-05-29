@@ -44,32 +44,44 @@ Table: Unterschiede zwischen PCL und SAP Projekten
 
 Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist folgende Hardware zum Einsatz gekommen.
 
-| Gerät           | OS                         | Version   |
-|-----------------|----------------------------|-----------|
-| iPhone 5        | iOS                        | xxx       |
-| Asus Nexus 7    | Android                    | xxx       |
-| Virtual Machine | Windows 10 Insider Preview | Build xxx |
-| MacBook Pro     | Mac OSX                    | xxx       |
+| Gerät           | OS                         | Version         | Zweck                                        |
+|-----------------|----------------------------|-----------------|----------------------------------------------|
+| iPhone 5        | iOS                        | 9.3.1           | Testen der App auf iOS                       |
+|---------------------------------------------------------------------------------------------------------------|
+| Asus Nexus 7    | Android                    | 6.0 Marshmallow | Testen der App auf Android                   |
+|---------------------------------------------------------------------------------------------------------------|
+| Virtual Machine | Windows 10 Insider Preview | Build 1511      | Entwickeln und Testen der App auf Windows 10 |
+|---------------------------------------------------------------------------------------------------------------|
+| MacBook Pro     | Mac OSX                    | ???             | Kompilieren und deployen der App für iOS     |
 
 Table: Hardware und Betriebssysteme
 
 # Benötigte Software (APIs, Tools, IDEs, Emulatoren, Simulatoren)
 
-| Software           | Art | Version             | Zweck                                         |
-|--------------------|-----|---------------------|-----------------------------------------------|
-| Viusal Studio 2015 | IDE | 2015 xxx            | Entwicklung der Applikation                   |
-| Android API        | API | 6.0 Marshmallow xxx | Benötigt für Deployment auf Android Plattform |
-| iOS API            | API | xxx                 | Benötigt für Deployment auf iOS Plattform     |
+| Software           | Art | Version                | Zweck                                         |
+|--------------------|-----|------------------------|-----------------------------------------------|
+| Viusal Studio 2015 | IDE | 14.0.25123.00 Update 2 | Entwicklung der Applikation                   |
+| Android API        | API | API Level 23           | Benötigt für Deployment auf Android Plattform |
+| iOS API            | API | ???                    | Benötigt für Deployment auf iOS Plattform     |
 
 Table: Eingesetzte Software und APIs
 
 ![checkmark](img/Checked-50.png "Checked")
 
 # SOAP
+
+Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Servives erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus belibigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
+
+[^xmlFormat]: Extensible Markup Language Format, ist eine Auszeichnungssprache für den plattform- und implementationsunabhängigen Austausch von Daten zwischen Computersystemen.
+[^faultResponse]: XML-Format Respone vom SOAP Service, welcher einen fehler im Request signalisiert.
+[^soap]: Simple Object Access Protocol.
+
+
 - Simple Object Access Protocol
 - XML-Format
 - Operations
 - Request/Response
+
 
 # Projektarchitektur
 - **Data** Konsumieren des SOAP-Service
@@ -77,6 +89,10 @@ Table: Eingesetzte Software und APIs
 - **Views** Abbilden der Benutzoberfläche in Form von Pages
 
 # XAML vs. Code
+Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei unterschiedliche Arten, entweder die Pages werden via XAML deklarativ entworfen oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingsetzten Framework ab. Durch die hierachische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so viel wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. DataTrigger können so bis zu einer gewissen Komplexheit angelegt werden (siehe Kapitel "DataTrigger").
+
+[^wpf]: Ein von Microsoft angebotenes GUI Framework auf Basis von .NET.
+
 # Page Layouts
 ![Xamarin.Forms Layouts](img/xamarin_layouts.png "Xamarin.Forms Layouts")
 
