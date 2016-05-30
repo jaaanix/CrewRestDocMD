@@ -91,8 +91,31 @@ Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei untersch
 [^wpf]: Ein von Microsoft angebotenes GUI Framework auf Basis von .NET.
 
 # Page Layouts
-Xamarin.Forms bietet mit der **Views** Subklasse **Layouts** folgende Page-Layouts:
+Xamarin.Forms bietet mit der **Views** Subklasse **Layouts** folgende Layouts zum Darstellen von UI-Elementen und Inhalt wie z.B. Button, InputText oder ListView:
+
 ![Xamarin.Forms Layouts](img/xamarin_layouts.png "Xamarin.Forms Layouts")
+[@Layouts]
+
+Die in der Grafik abgebildeten Layouts unterliegen wiederum einem der in der folgenden Layout-Hierarchie dargestellten Layouts [@MicrosoftXamarinBook S. 1020]:
+
+- Page
+    - TemplatedPage
+        - ContentPage
+    - NavigationPage
+    - MasterDetailPage
+    - MultiPage<T>
+        - TabbedPage
+        - CarouselPage
+
+
+Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Beziehung[^parentChild], bei welcher der folgende Grundsatz für die Anordungsbeziehung gilt:
+"Children have requests, but parents lay down the law." [@MicrosoftXamarinBook S.  1055].
+
+Das in CrewRest am häufigsten verwendete Layout ist das StackLayout, in welchem sich über das Property "Orientation" die Ausrichtung festlegen lässt, "horizontal" oder "vertical". Die im StackLayout liegenden UI-Elemente werden darin entweder horizontal oder vertikal aneinandergreiht.
+
+Die
+
+[^parentChild]: hierachische Anordnung von UI-Elemten.
 
 # Wie funktioniert das native Deployment der unterschiedlichen Betriebssysteme/Plattformen
 - Windows UWP direkt auf Windows 10
@@ -103,7 +126,7 @@ Xamarin.Forms bietet mit der **Views** Subklasse **Layouts** folgende Page-Layou
 text
 
 ## Win10
-text
+- Anfang Probleme beim Darstellen von ListView Details, erst mit Update behoben
 
 ## iOS
 text
@@ -121,6 +144,7 @@ private ImageSource bildquelle;
 
 ## Plattformspezifisches Verhalten in XAML
 - XAML OnPlatform Tag
+- Probleme durch häufig wechselnde Versionen der verschiedenen Systeme
 ## Bindings
 text
 
