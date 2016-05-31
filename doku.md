@@ -7,7 +7,7 @@ toc: true
 lang: de-DE
 documentclass: scrreprt
 bibliography: literatur.bib
-csl: din-1505-2.csl
+csl: din-1505-2-numeric-alphabetical.csl #din-1505-2.csl
 abstract: |
  Im Folgenden Praxisprojekt ist es Ziel die Cross-Plattform Applikation "CrewRest" für Windows 10, Android und iOS zu erstellen. Als Technologien soll Microsoft UWP und Xamarin zum Einsatz kommen. Somit soll aus einer gemeinsamen Codebasis eine Applikation, lauffähig auf verschiedenen Betriebssysteme erzeugt werden. Als Programmiersprache kommt C# zum Einsatz. Der fachliche Hintergrund ist es, ein System für die Mitarbeiter einer Luftfahrtgesellschaft zu entwickeln, um Urlaubsanträge oder allgemeiner: Anträge für Abwesenheiten erstellen zu können und dessen Status einsehen zu können. Bei Möglichkeit ist es erwünschenswert eine Art Kalenderüberischt in der Applikation anzuzeigen, welche die Abwesenheitslage aller Mitarbeiter darstellt, um mögliche Zeiträume für neue Abwesenheitsanträge sinnvoll anlegen zu können.
 ...
