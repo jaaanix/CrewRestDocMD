@@ -30,7 +30,7 @@ In beiden Fällen ist der in C# geschriebene Code Plattformübergreifend nutzbar
 Table: Unterschiede zwischen PCL und SAP Projekten
 [@PCLvsSAPTable]
 
-Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann. Zum Beispiel der in CrewRest verwendete HTTPClient wurde via einem NuGet[^NuGet] Package nachinstalliert und kann plattformübergreifend im Code verwendet werden.
+Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann, gewisse Bibliotheken lassen sich z.B. in Form eines NuGet[^NuGet] Packages nachträglich installieren.
 
 Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Kapitel [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Meachanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen von SOAP Requests und Responses kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisirten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
 
@@ -62,7 +62,7 @@ Table: Hardware und Betriebssysteme
 Table: Eingesetzte Software und APIs
 
 # SOAP
-Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Servives erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus belibigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
+Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Services erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus belibigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
 
 [^xmlFormat]: Extensible Markup Language Format, ist eine Auszeichnungssprache für den plattform- und implementationsunabhängigen Austausch von Daten zwischen Computersystemen [@XML].
 [^faultResponse]: XML-Format Respone vom SOAP Service, welcher einen fehler im Request signalisiert.
@@ -192,12 +192,30 @@ Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Interm
 [^aotc]: Kompiliert den Code vollständig vor der Ausführung, also nicht zur Laufzeit [@AOTC]
 
 # Implementierung
+In den folgenden Abschnitten wird der Zweck der implementierten Komponenten erklärt und es wird auf Details der Implementierung von Komponenten der CrewRest App eingegangen.
+
 ```csharp
 public void lol(int i) {
 private ImageSource bildquelle;
 }
 ```
-## SOAP
+
+## SOAP Zugriff
+Der Zugriff auf SOAP Services ist für die Anzeige und Erstellung von Daten in  der App CrewRest nötig. Um den Zugriff zu realisieren wird die Klasse `System.Net.Http.HttpClient` genutzt. Diese Klasse ermöglicht den Datenaustausch zwischen App und Diensten auf Basis des HTTP Protokolls zu nutzen.
+
+Um speziell einen SOAP Service zu konsumieren, werden einer Instanz der Klasse `HttpClient` Request Header Informationen bestehend aus *Name* und *SOAP Operationname* zugewiesen. Anschließend wird asynchron eine Http Methode vom Typ POST mit URL und SOAP-XML-Objekt an den SOAP Service gesendet um einen SOAP Response zu erhalten.
+
+```csharp
+//...
+var client = new System.Net.Http.HttpClient();
+client.DefaultRequestHeaders.Add("SOAPAction", soapOperationName);
+var content = new System.Net.Http.StringContent(soapString, Encoding.UTF8, "text/xml");
+var response = await client.PostAsync(uri, content);
+//...
+```
+
+Der erhaltene Response wird anschließend auf seinen Status überprüft um zu entscheiden ob ein Fault Response oder der erwartete Response mit den gewünschten Daten vorliegt. Je nach Response Typ muss dieser dann entsprechend geparsed und deserialisiert werden. Dazu wird... klasse xyz benutzt xml geparsed, objektinstanz erstellt usw ???
+
 - HTTPClient
 - Aus Objekten XML parsen und SOAP-Request senden
 - Aus SOAP-Response XML zu Objekt parsen
@@ -205,6 +223,7 @@ private ImageSource bildquelle;
 ## Plattformspezifisches Verhalten in XAML
 - XAML OnPlatform Tag
 - Probleme durch häufig wechselnde Versionen der verschiedenen Systeme
+
 ## Bindings
 text
 
@@ -234,5 +253,5 @@ Plattformübergreifendes Anzeigen von Bildern
 
 ## Einschränkungen und Probleme bei der Cross-Plattform Entwicklung
 - Anfang Probleme beim Darstellen von ListView Details, erst mit Update behoben
--
+
 # Literatur
