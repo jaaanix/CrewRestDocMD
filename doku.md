@@ -91,29 +91,82 @@ Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei untersch
 [^wpf]: Ein von Microsoft angebotenes GUI Framework auf Basis von .NET [@WPF].
 
 # Page Layouts
-Xamarin.Forms bietet mit der **Views** Subklasse **Layouts** folgende Layouts zum Darstellen von UI-Elementen und Inhalt wie z.B. Button, InputText oder ListView:
+Xamarin.Forms bietet mit der Subklasse `Layouts` (der Oberklasse `View`) folgende Layouts zum Darstellen von UI-Elementen. In den Layouts können wiederum UI-Elemente vom Typ `Views` wie z.B. Button, InputText oder ListView dargestellt werden oder auch weitere verschachtelte Layouts der Klasse `Layouts`.
 
-![Xamarin.Forms Layouts](img/xamarin_layouts.png "Xamarin.Forms Layouts")
+![XamarinFormsLayouts](img/xamarin_layouts.png "Xamarin.Forms Layouts")
+
 [@Layouts]
 
-Die in der Grafik abgebildeten Layouts unterliegen wiederum einem der in der folgenden Layout-Hierarchie dargestellten Layouts [@MicrosoftXamarinBook S. 1020]:
+Die in der Grafik [XamarinFormsLayouts](#XamarinFormsLayouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung [XamarinFormsPages](#XamarinFormsPages) dargestellten Anordungsseiten der Klasse `Pages` [@MicrosoftXamarinBook S. 1020]:
 
-- Page
-    - TemplatedPage
-        - ContentPage
-    - NavigationPage
-    - MasterDetailPage
-    - MultiPage<T>
-        - TabbedPage
-        - CarouselPage
+![XamarinFormsPages](img/xamarin_pages.png "Xamarin.Forms Pages")
 
+[@Pages]
 
 Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Beziehung[^parentChild], bei welcher der folgende Grundsatz für die Anordungsbeziehung gilt:
 "Children have requests, but parents lay down the law." [@MicrosoftXamarinBook S.  1055].
 
 Das in CrewRest am häufigsten verwendete Layout ist das StackLayout, in welchem sich über das Property "Orientation" die Ausrichtung festlegen lässt, "horizontal" oder "vertical". Die im StackLayout liegenden UI-Elemente werden darin entweder horizontal oder vertikal aneinandergreiht.
 
-Die
+Im folgenden Beispiel der CrewRest App lässt sich die hierachische Anordnung von UI-Elementen erkennen. Dargestellt ist die Seite `AntraegeUeberischt.xaml`, welche aus einer *MasterDetailPage* mit den einzelnen Abschnitten `<MasterDetailPage.Master>` und `<MasterDetailPage.Detail>` besteht und dessen Ansicht zur Lauftzeit in Form eines Screenshots [AntraegeUeberischt](#AntraegeUeberischt).
+
+```xml
+<?xml version="1.0" encoding="utf-8" ?>
+<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CrewRest.Views.AntraegeUeberischt"
+             x:Name="AntraegeUeberischt" Title="Urlaubsanträge">
+  <MasterDetailPage.Master>
+    <ContentPage Title="Filter">
+      <StackLayout Orientation="Vertical">
+        <Picker Title="Jahr" x:Name="jahrFilterPicker" SelectedIndexChanged="OnJahrPickerSelectionChanged" />
+        <Picker Title="Monat" x:Name="monatFilterPicker" SelectedIndexChanged="OnMonatPickerSelectionChanged" />
+        <Picker Title="Status" x:Name="statusFilterPicker" SelectedIndexChanged="OnStatusPickerSelectionChanged" />
+        <Button Text="Reset" Clicked="OnFilterResetButtonClicked" />
+      </StackLayout>
+    </ContentPage>
+  </MasterDetailPage.Master>
+  <MasterDetailPage.Detail>
+    <ContentPage>
+      <ContentPage.Padding>
+        <OnPlatform x:TypeArguments="Thickness" iOS="0, 20, 0, 0" WinPhone="20,20,20,20" />
+      </ContentPage.Padding>
+      <StackLayout>
+        <ListView x:Name="urlaubsantraegeListeView" BindingContext="{x:Reference Name=AntraegeUeberischt}"
+                  ItemTapped="UrlaubsantragItemTapped">
+          <ListView.Header>
+            <StackLayout Padding="0,0,0,0" />
+          </ListView.Header>
+          <ListView.Footer>
+            <StackLayout Padding="0,0,0,0" />
+          </ListView.Footer>
+          <ListView.ItemTemplate>
+            <DataTemplate x:Name="masterDataTemplate">
+              <ViewCell>
+                <ContentView>
+                  <StackLayout Orientation="Vertical">
+                    <StackLayout Orientation="Horizontal">
+                      <Label Text="{Binding antragsart}" VerticalOptions="CenterAndExpand" />
+                      <Label Text="{Binding antragsstatus}" VerticalOptions="CenterAndExpand" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                      <Label Text="{Binding beantragtVon, StringFormat='{0:dd.MM.yy}'}" />
+                      <Label Text=" - " />
+                      <Label Text="{Binding beantragtBis, StringFormat='{0:dd.MM.yy}'}}" />
+                    </StackLayout>
+                  </StackLayout>
+                </ContentView>
+              </ViewCell>
+            </DataTemplate>
+          </ListView.ItemTemplate>
+        </ListView>
+      </StackLayout>
+    </ContentPage>
+  </MasterDetailPage.Detail>
+</MasterDetailPage>
+```
+
+![AntraegeUeberischt](img/antraege_uebersicht.png "Anträge Übersicht Page")
 
 [^parentChild]: hierachische Anordnung von UI-Elemten.
 
@@ -122,14 +175,21 @@ Die
 - Android via USB-Debug Mode
 - iOS via Remote Login auf Mac OSX und installiertem XCode sowie Xamarin Studio
 
-## Android
-text
+[@Deployment]
 
-## Win10
-- Anfang Probleme beim Darstellen von ListView Details, erst mit Update behoben
+## Android
+Um aus einer Xamarin Cross-Plattform App eine Android Applikation zu bauen wird der implementierte C#-Code in Common Intermediate Language[^IL] übersetzt. Anschließend wird mit Hilfe von Mono[^mono] ein Android Package gepackt, welcher mit Hilfe von JIT'ing[^jit] ausgeführt werden kann. Während dieser Prozesse werden ungenutzte Klassen automatisch entfernt um die App zu optimieren.
 
 ## iOS
-text
+Für das iOS Deployment wird der C#-Code mittels Ahead-of-time-Compiler[^aotc] in ARM Assembly Code übersetzt und anschließend zu einer iOS App gepackt. Auch hier wird während dem Kompiliervorgang dafür gesorgt, dass nicht benötigte Klassen entfernt werden um die Größe der App zu reduzieren.
+
+## Windows 10
+Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Intermediate Language übersetzt und in der .NET Laufzeitumgebung ausgeführt.
+
+[^jit]: Just-in-time-Kompilierung, Code wird zur Laufzeit in nativen Maschinencode übersetzt. [@JIT]
+[^mono]: Open Source Implementierung des .NET Frameworks. [@Mono]
+[^IL]: Intermediate Language, eine Zwischensprache in die C# Applikationen übersetzt werden. [@CIL]
+[^aotc]: Kompiliert den Code vollständig vor der Ausführung, also nicht zur Laufzeit [@AOTC]
 
 # Implementierung
 ```csharp
@@ -172,4 +232,7 @@ text
 ## EmbeddedResource
 Plattformübergreifendes Anzeigen von Bildern
 
+## Einschränkungen und Probleme bei der Cross-Plattform Entwicklung
+- Anfang Probleme beim Darstellen von ListView Details, erst mit Update behoben
+-
 # Literatur
