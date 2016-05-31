@@ -4,7 +4,10 @@ lang: de-DE
 documentclass: scrreprt
 bibliography: literatur.bib
 csl: din-1505-2-numeric-alphabetical.csl
-#mainfont: Arial
+mainfont: Gentium Plus
+mainfontoptions: BoldFont=Gentium Basic Bold
+mainfontoptions: ItalicFont=Gentium Basic Italic
+mainfontoptions: BoldItalicFont=Gentium Basic Bold Italic
 ---
 
 \begin{center} \textbf{\uppercase{abstract}} \end{center}
