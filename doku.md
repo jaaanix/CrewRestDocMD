@@ -217,11 +217,12 @@ Der Zugriff auf SOAP Services ist für die Anzeige und Erstellung von Daten in  
 
 Um speziell einen SOAP Service zu konsumieren, werden einer Instanz der Klasse `HttpClient` Request Header Informationen bestehend aus *Name* und *SOAP Operationname* zugewiesen. Anschließend wird asynchron eine HTTP Methode vom Typ POST mit URL und einem `string` im vom Service erwarteten XML-Format an den SOAP Service gesendet (der Request) um einen SOAP Response zu erhalten.
 
-```csharp
+```cs
 //...
 var client = new System.Net.Http.HttpClient();
 client.DefaultRequestHeaders.Add("SOAPAction", soapOperationName);
-var content = new System.Net.Http.StringContent(soapString, Encoding.UTF8, "text/xml");
+var content =
+    new System.Net.Http.StringContent(soapString,Encoding.UTF8,"text/xml");
 var response = await client.PostAsync(uri, content);
 //...
 ```
@@ -230,12 +231,14 @@ Der erhaltene Response wird anschließend auf seinen Status überprüft um zu en
 
 Aus dem erhaltenen Response vom Typ `string` wird mit hilfe der statischen Methode `Parse` der Klasse `XDocument` ein automatisches parsing durchgeführt. Anschließend werden die vom SOAP Service definierten Namespaces abgefragt und gespeichert. Nun kann der eigentliche Inhalt, also die gewünschten Informationen aus dem Response gefiltert werden, da die SOAP Serivce Metadaten mit hilfe der zuvor abgefragten Namespaces lokalisiert und entfernt werden können. Aus dem erhaltenen, gefilterten `string` wird schließlich ein durch deserialisieren ein Objekt der passenden Klassen erzeugt.
 
-```csharp
+```cs
 // parsen des string SOAP Responses
 var xmlContent = XDocument.Parse(response);
 XNamespace soap = XNamespace.Get("http://schemas.xmlsoap.org/soap/envelope/");
 XNamespace ns2 = XNamespace.Get("http://www.dlh.de/clh/Urlaub_V01");
-// entfernen des SOAP Headers um anschliessend den reinen Inhalt deserialisieren zu koennen
+// entfernen des SOAP Headers
+// um anschliessend den reinen
+// Inhalt deserialisieren zu koennen
 var responseXML = xmlContent.
     Element(soap + "Envelope").
     Element(soap + "Body").
@@ -244,11 +247,14 @@ var responseXML = xmlContent.
 XmlSerializer serializer = new XmlSerializer(typeof(urlaubsantrag));
 
 // Erstellen einer Liste von Urlaubsantraegen
-ObservableCollection<urlaubsantrag> urlaubsantraege = new ObservableCollection<urlaubsantrag>();
+ObservableCollection<urlaubsantrag> urlaubsantraege =
+    new ObservableCollection<urlaubsantrag>();
 for (int i = 0; i < responseXML.Count(); i++)
 {
     // Deserialisieren des XMLs und Erstellen eines Urlaubsantrages
-    urlaubsantraege.Add((urlaubsantrag)serializer.Deserialize(responseXML.ElementAt(i).CreateReader()));
+    urlaubsantraege.Add((urlaubsantrag)serializer.Deserialize(
+        responseXML.ElementAt(i).CreateReader())
+        );
 }
 return urlaubsantraege;
 ```
@@ -331,14 +337,81 @@ Durch diese Zuweisung ist es wiederum möglich direkt auf der XAML-Page auf die 
 
 [^ViewToView]: Binding zwischen zwei UI-Komponenten auf der selben Page.
 
-## Updaten von Daten
-text
+### Updaten von gebundenen UI-Elementen
+Um eine UI-Komponente zu aktualisieren wenn ihr Wert an ein Property im Code-Behind gebunden ist, ist es nötig das Getter uns Setter für das gebundene Property implementiert sind.
 
-## Anträge ListView
-text
+```cs
+private string meinText;
+public string MeinText
+{
+    set
+    {
+        if (meinText != value) { // impliziter Parameter 'value'
+            meinText = value;
+            OnPropertyChanged("MeinText");
+        }
+    }
+    get {
+        return meinText;
+    }
+}
+```
 
-## Filtern der Liste
-text
+Ist das Binding einer UI-Komponente wie der ListView in CrewRest an eine Collection vom Typ `ObservableCollection<T>` gebunden, ist es nicht nötig das Updaten der angezeigten Daten durch Getter und Setter zu forcieren. Die Klasse `ObservableCollection<T>` implementiert das Interface `INotifyCollectionChanged`. Ist dieses Interface implementiert, feuert die Collection bei jedem Hinzufügen oder Entfernen von Items (Einträgen) der Collection ein `CollectionChanged` Event. Die ListView in Xamarin ist so implementiert, dass sie sich im Falle eines `CollectionChanged` Events automatisch aktualisiert [@MicrosoftXamarinBook, S.551-552].
+
+## Filtern der Urlaubsanträge Liste
+Die Urlaubsanträge Liste zeigt dem User standardmäßig alle Urlaubsanträge eines bestimmten Jahres. Des Weiteren bietet die App die Möglichkeit die angezeigten Urlaubsanträge nach Monat (1-12) und Status (beantragt, geloescht, genehmigt, abgelehnt) zu filtern. Die Ausgewählten Werte der drei Filter werden mit einer AND-Beziehung kombiniert.
+
+### Das Filtern nach Jahren
+Um die Urlaubsanträge eines bestimmten Jahres in CrewRest anzuzeigen, werden im Gegensatz zu den Filtern für Monat und Status keine vorhandenen Daten gefiltert, sondern es wird ein neuer SOAP-Request an den entsprechenden Service gesendet. Das hat den Grund, dass die genutzte SOAP-Operation des Services die Parameter *TLC* und *JAHR* benötigt um einen Urlaubsanträge Response zu erhalten. Das heißt es können immer nur Urlaubsantäge eines gesamten Jahres erhalten werden.
+
+### Das Filtern nach Monat und Status
+Wird ein Monat oder Status ausgewählt, wird dem jeweiligen Property (FilterMonat oder FilterStatus) der gewählte Wert der Auswahlliste zugewiesen. Anschließend wird die eigentliche Filterung durch die Methode `urlaubsantraegeFiltern` ausgeführt. Die Methode `urlaubsantraegeFiltern` speichert dann alle Urlaubsanträge die gefiltert wurde in eine neue Liste vom Typ `List<urlaubsantrag>`, welche schließlich dem `ItemSource` Property des ListView UI-Elements zugewiesen wird, um die gefilterten Urlaubsanträge anzuzeigen.
+
+Der Button "Reset" setzt die Indizes der Auswahllisten zurück und setzt die das `ItemSource` Property der ListView Komponente wieder auf die ungefilterte Collection zurück. Die Liste wird dann wieder ungefiltert angezeigt.
+
+```cs
+void OnMonatPickerSelectionChanged(object sender, EventArgs args)
+{
+    Picker picker = (Picker)sender;
+    int selectedIndex = picker.SelectedIndex;
+    string selectedItem =
+        selectedIndex != -1 ? picker.Items[selectedIndex] : null;
+    FilterMonat = selectedItem;
+    urlaubsantraegeFiltern();
+}
+
+void OnStatusPickerSelectionChanged(object sender, EventArgs args)
+{
+    Picker picker = (Picker)sender;
+    int selectedIndex = picker.SelectedIndex;
+    string selectedItem =
+        selectedIndex != -1 ? picker.Items[selectedIndex] : null;
+    FilterStatus = selectedItem;
+    urlaubsantraegeFiltern();
+}
+
+/// <summary>
+/// Filtert die angezeigten Urlaubsantraege basierend auf
+/// Status und Monat Filtern in AND-Kombination
+/// </summary>
+void urlaubsantraegeFiltern()
+{
+    List<urlaubsantrag> _gefilterteUrlaubsantraege = new List<urlaubsantrag>();
+    foreach (urlaubsantrag antrag in urlaubsantraegeListe.ToList())
+    {
+        if ((antrag.antragsstatus == FilterStatus || FilterStatus == null) &&
+            (antrag.beantragtVon.Month.ToString() ==
+                FilterMonat || FilterMonat == null) &&
+            (antrag.beantragtBis.Month.ToString() ==
+                FilterMonat || FilterMonat == null))
+        {
+            _gefilterteUrlaubsantraege.Add(antrag);
+        }
+    }
+    urlaubsantraegeListeView.ItemsSource = _gefilterteUrlaubsantraege;
+}
+```
 
 ## Dynamisches hinzufügen von Komponenten
 text
