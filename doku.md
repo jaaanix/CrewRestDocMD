@@ -8,6 +8,7 @@ mainfont: Gentium Plus
 mainfontoptions: BoldFont=Gentium Basic Bold
 mainfontoptions: ItalicFont=Gentium Basic Italic
 mainfontoptions: BoldItalicFont=Gentium Basic Bold Italic
+fontsize: 12pt
 ---
 
 \begin{center} \textbf{\uppercase{abstract}} \end{center}
@@ -82,7 +83,7 @@ Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luf
 - **Models**
     - Enthält C# Klassen mit Properties für die benötigten Attribute aus validen XML-Objekten für Requests und Responses.
 - **Views**
-    - Enthält in der die in CrewRest benötigten XAML Pages und deren C# Code-Behind Klassen[^codeBehind]
+    - Enthält in der die in CrewRest benötigten XAML Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegen sollte.
 
 [^codeBehind]: Einer XAML Page zugehörige C# Klasse um dessen Logik zu implementieren.
 
@@ -120,20 +121,30 @@ Im folgenden Beispiel der CrewRest App lässt sich die hierachische Anordnung vo
   <MasterDetailPage.Master>
     <ContentPage Title="Filter">
       <StackLayout Orientation="Vertical">
-        <Picker Title="Jahr" x:Name="jahrFilterPicker" SelectedIndexChanged="OnJahrPickerSelectionChanged" />
-        <Picker Title="Monat" x:Name="monatFilterPicker" SelectedIndexChanged="OnMonatPickerSelectionChanged" />
-        <Picker Title="Status" x:Name="statusFilterPicker" SelectedIndexChanged="OnStatusPickerSelectionChanged" />
-        <Button Text="Reset" Clicked="OnFilterResetButtonClicked" />
+        <Picker Title="Jahr"
+                x:Name="jahrFilterPicker"
+                SelectedIndexChanged="OnJahrPickerSelectionChanged" />
+        <Picker Title="Monat"
+                x:Name="monatFilterPicker"
+                SelectedIndexChanged="OnMonatPickerSelectionChanged" />
+        <Picker Title="Status"
+                x:Name="statusFilterPicker"
+                SelectedIndexChanged="OnStatusPickerSelectionChanged" />
+        <Button Text="Reset"
+                Clicked="OnFilterResetButtonClicked" />
       </StackLayout>
     </ContentPage>
   </MasterDetailPage.Master>
   <MasterDetailPage.Detail>
     <ContentPage>
       <ContentPage.Padding>
-        <OnPlatform x:TypeArguments="Thickness" iOS="0, 20, 0, 0" WinPhone="20,20,20,20" />
+        <OnPlatform x:TypeArguments="Thickness"
+                    iOS="0, 20, 0, 0"
+                    WinPhone="20,20,20,20" />
       </ContentPage.Padding>
       <StackLayout>
-        <ListView x:Name="urlaubsantraegeListeView" BindingContext="{x:Reference Name=AntraegeUeberischt}"
+        <ListView x:Name="urlaubsantraegeListeView"
+                  BindingContext="{x:Reference Name=AntraegeUeberischt}"
                   ItemTapped="UrlaubsantragItemTapped">
           <ListView.Header>
             <StackLayout Padding="0,0,0,0" />
@@ -147,13 +158,17 @@ Im folgenden Beispiel der CrewRest App lässt sich die hierachische Anordnung vo
                 <ContentView>
                   <StackLayout Orientation="Vertical">
                     <StackLayout Orientation="Horizontal">
-                      <Label Text="{Binding antragsart}" VerticalOptions="CenterAndExpand" />
-                      <Label Text="{Binding antragsstatus}" VerticalOptions="CenterAndExpand" />
+                      <Label Text="{Binding antragsart}"
+                             VerticalOptions="CenterAndExpand" />
+                      <Label Text="{Binding antragsstatus}"
+                             VerticalOptions="CenterAndExpand" />
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                      <Label Text="{Binding beantragtVon, StringFormat='{0:dd.MM.yy}'}" />
+                      <Label Text="{Binding beantragtVon,
+                          StringFormat='{0:dd.MM.yy}'}" />
                       <Label Text=" - " />
-                      <Label Text="{Binding beantragtBis, StringFormat='{0:dd.MM.yy}'}}" />
+                      <Label Text="{Binding beantragtBis,
+                          StringFormat='{0:dd.MM.yy}'}}" />
                     </StackLayout>
                   </StackLayout>
                 </ContentView>
@@ -181,6 +196,8 @@ Im folgenden Beispiel der CrewRest App lässt sich die hierachische Anordnung vo
 ## Android
 Um aus einer Xamarin Cross-Plattform App eine Android Applikation zu bauen wird der implementierte C#-Code in Common Intermediate Language[^IL] übersetzt. Anschließend wird mit Hilfe von Mono[^mono] ein Android Package gepackt, welcher mit Hilfe von JIT'ing[^jit] ausgeführt werden kann. Während dieser Prozesse werden ungenutzte Klassen automatisch entfernt um die App zu optimieren.
 
+Für die technische Umsetzung wurde das Android Tablet im USB-Debug-Mode via USB mit dem Windows 10 verbunden wodurch ein direktes Deployment auf dem Gerät aus der Entwicklungsumgebung heraus möglich ist.
+
 ## iOS
 Für das iOS Deployment wird der C#-Code mittels Ahead-of-time-Compiler[^aotc] in ARM Assembly Code übersetzt und anschließend zu einer iOS App gepackt. Auch hier wird während dem Kompiliervorgang dafür gesorgt, dass nicht benötigte Klassen entfernt werden um die Größe der App zu reduzieren.
 
@@ -195,16 +212,10 @@ Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Interm
 # Implementierung
 In den folgenden Abschnitten wird der Zweck der implementierten Komponenten erklärt und es wird auf Details der Implementierung von Komponenten der CrewRest App eingegangen.
 
-```csharp
-public void lol(int i) {
-private ImageSource bildquelle;
-}
-```
-
-## SOAP Zugriff
+## SOAP Zugriff - XML Parsing - (De)serialisieren
 Der Zugriff auf SOAP Services ist für die Anzeige und Erstellung von Daten in  der App CrewRest nötig. Um den Zugriff zu realisieren wird die Klasse `System.Net.Http.HttpClient` genutzt. Diese Klasse ermöglicht den Datenaustausch zwischen App und Diensten auf Basis des HTTP Protokolls zu nutzen.
 
-Um speziell einen SOAP Service zu konsumieren, werden einer Instanz der Klasse `HttpClient` Request Header Informationen bestehend aus *Name* und *SOAP Operationname* zugewiesen. Anschließend wird asynchron eine Http Methode vom Typ POST mit URL und SOAP-XML-Objekt an den SOAP Service gesendet um einen SOAP Response zu erhalten.
+Um speziell einen SOAP Service zu konsumieren, werden einer Instanz der Klasse `HttpClient` Request Header Informationen bestehend aus *Name* und *SOAP Operationname* zugewiesen. Anschließend wird asynchron eine HTTP Methode vom Typ POST mit URL und einem `string` im vom Service erwarteten XML-Format an den SOAP Service gesendet (der Request) um einen SOAP Response zu erhalten.
 
 ```csharp
 //...
@@ -215,18 +226,110 @@ var response = await client.PostAsync(uri, content);
 //...
 ```
 
-Der erhaltene Response wird anschließend auf seinen Status überprüft um zu entscheiden ob ein Fault Response oder der erwartete Response mit den gewünschten Daten vorliegt. Je nach Response Typ muss dieser dann entsprechend geparsed und deserialisiert werden. Dazu wird... klasse xyz benutzt xml geparsed, objektinstanz erstellt usw ???
+Der erhaltene Response wird anschließend auf seinen Status überprüft um zu entscheiden ob ein Fault Response oder der erwartete Response mit den gewünschten Daten vorliegt. Je nach Response Typ muss dieser dann entsprechend geparsed und anschließend deserialisiert werden. Dazu werden .NET Framework Klassen `XDocument`, `XNamespace` und `XmlSerializer` genutzt.
 
-- HTTPClient
-- Aus Objekten XML parsen und SOAP-Request senden
-- Aus SOAP-Response XML zu Objekt parsen
+Aus dem erhaltenen Response vom Typ `string` wird mit hilfe der statischen Methode `Parse` der Klasse `XDocument` ein automatisches parsing durchgeführt. Anschließend werden die vom SOAP Service definierten Namespaces abgefragt und gespeichert. Nun kann der eigentliche Inhalt, also die gewünschten Informationen aus dem Response gefiltert werden, da die SOAP Serivce Metadaten mit hilfe der zuvor abgefragten Namespaces lokalisiert und entfernt werden können. Aus dem erhaltenen, gefilterten `string` wird schließlich ein durch deserialisieren ein Objekt der passenden Klassen erzeugt.
 
-## Plattformspezifisches Verhalten in XAML
+```csharp
+// parsen des string SOAP Responses
+var xmlContent = XDocument.Parse(response);
+XNamespace soap = XNamespace.Get("http://schemas.xmlsoap.org/soap/envelope/");
+XNamespace ns2 = XNamespace.Get("http://www.dlh.de/clh/Urlaub_V01");
+// entfernen des SOAP Headers um anschliessend den reinen Inhalt deserialisieren zu koennen
+var responseXML = xmlContent.
+    Element(soap + "Envelope").
+    Element(soap + "Body").
+    Element(ns2 + responseType).
+    Elements("urlaubsantrag");
+XmlSerializer serializer = new XmlSerializer(typeof(urlaubsantrag));
+
+// Erstellen einer Liste von Urlaubsantraegen
+ObservableCollection<urlaubsantrag> urlaubsantraege = new ObservableCollection<urlaubsantrag>();
+for (int i = 0; i < responseXML.Count(); i++)
+{
+    // Deserialisieren des XMLs und Erstellen eines Urlaubsantrages
+    urlaubsantraege.Add((urlaubsantrag)serializer.Deserialize(responseXML.ElementAt(i).CreateReader()));
+}
+return urlaubsantraege;
+```
+
+Um einen Request an den SOAP Service im XML-Format senden zu können, wird ein analoges Verfahren angewendet, wobei in diesem Fall kein erhaltener Response deserialisiert wird sondern ein von der App erzeugtes Objekt (z.B. ein Urlaubsantrage) serialisiert wird.
+
+## Plattformspezifisches Verhalten via XAML Konfigurieren
+In manchen Fällen ist ein plattformspezifisches Verhalten der App unumgänglich. Ein Beispiel dafür ist das Top-Padding[^TopPadding] unter iOS. Wird das Top-Padding nicht gezielt eingestellt, werden die am obenren Rand angezeigten UI-Elemente teilweise von der Statusleiste des Betriebssystemes verdeckt. Konkret bedeutet das, dass unter iOS UI-Elemente von z.B. der Uhrzeit- oder Empfangsanzeige verdeckt werden.
+
+Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeeinstellungen mit dem XAML-Tag <OnPlatform> zu festzulegen. Im folgenden Beispiel ist ein Padding für eine Seite vom Typ `ContentPage` festgelegt. Konfiguriert ist ein Top-Padding von 20px für iOS und ein Padding von 20px für alle Seiten auf Windows Phone 8.1.
+
+```xml
+<ContentPage>
+  <ContentPage.Padding>
+    <OnPlatform x:TypeArguments="Thickness"
+                iOS="0, 20, 0, 0"
+                WinPhone="20,20,20,20" />
+  </ContentPage.Padding>
+  <!-- weitere UI-Elemente... -->
+</ContentPage>
+```
+
 - XAML OnPlatform Tag
 - Probleme durch häufig wechselnde Versionen der verschiedenen Systeme
 
-## Bindings
-text
+[^TopPadding]: Der Abstand von UI-Elementen vom oberen Bildrand.
+
+## Data Bindings
+Ein Data Binding stellt in Xamarin eine Beziehungen zwischen Properties von zwei Objekten dar, was in den meisten Fällen die Beziehungen zwischen einer UI-Komponente (z.B. ein TextLabel) und Daten-Objekten definiert. Dieser Meachanismus bewirkt, dass das eine Objekt durch ein Event eine Änderung des verbundenen Objekts erfährt. Es wird hier von der Verbindung zwischen Properties von zwei Objekten gesprochen, weil auch eine UI-Komponente die auf einer XAML-Page angelegt wurde zur Laufzeit der App ein Objekt ist [@DataBindings].
+
+Ein gutes Beispiel für ein sogenanntes View-to-View Binding[^ViewToView] liefert der Xamarin Online Guide. Im diesem Beispiel handelt es sich um zwei UI-Elemente (ein Label und ein Schieberegler) welche teilweise voneinander abhängie Eigenschaften (Properties) besitzen. Die Eigenschaft `Rotation` des Labels, ist an die Eigenschaft `Value` des Sliders gebunden. Wird nun der Wert der Sliders durch den Benutzer geändert, dreht sich das Label entsprechend. Wichtig ist ebenfalls das festlegen der Eigenschaft `BindingContext` mit dem Wert `x:Reference...` was einen Verweis auf die Instanz der angezeigten Page darstellt und auf die Eigenschaft `x:Name` des Sliders verweist.
+```xml
+<Label Text="ROTATION"
+           BindingContext="{x:Reference Name=slider}"
+           Rotation="{Binding Path=Value}"
+           FontAttributes="Bold"
+           FontSize="Large"
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+
+<Slider x:Name="slider"
+           Maximum="360"
+           VerticalOptions="CenterAndExpand" />
+```
+
+Nach dem gleichen Prinzip lässt sich ein Data Binding auch für ein C# Property der jewiligen Code-Behind Klasse der jeweiligen Page definieren. Im Fall der Liste mit Urlaubsanträgen in CrewRest ist dieser Meachanismus umgesetzt. Zu diesem Zweck ist die Collection `urlaubsantraegeListe` vom Typ `ObservableCollection<urlaubsantrag>`, gefüllt mit den Urlaubsanträgen, über das Property `ItemsSource` an die ListView Komponente gebunden:
+`urlaubsantraegeListeView.ItemsSource = urlaubsantraegeListe;`
+Durch diese Zuweisung ist es wiederum möglich direkt auf der XAML-Page auf die Attribute der Collection zuzugreifen. Im folgenden XAML-Page Ausschnitt ist der Zugriff auf die einzelnen Attibute *antragsart*, *antragsstatus*, *beantragtVon* und *beantragtBis* zu sehen.
+
+```xml
+<ListView x:Name="urlaubsantraegeListeView"
+            BindingContext="{x:Reference Name=AntraegeUeberischt}"
+            ItemTapped="UrlaubsantragItemTapped">
+<!-- weitere ListView Parameter -->
+  <ListView.ItemTemplate>
+    <DataTemplate x:Name="masterDataTemplate">
+      <ViewCell>
+        <ContentView>
+          <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Horizontal">
+              <Label Text="{Binding antragsart}"
+                  VerticalOptions="CenterAndExpand" />
+              <Label Text="{Binding antragsstatus}"
+                  VerticalOptions="CenterAndExpand" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+              <Label Text="{Binding beantragtVon,
+                  StringFormat='{0:dd.MM.yy}'}" />
+              <Label Text=" - " />
+              <Label Text="{Binding beantragtBis,
+                  StringFormat='{0:dd.MM.yy}'}}" />
+            </StackLayout>
+          </StackLayout>
+        </ContentView>
+      </ViewCell>
+    </DataTemplate>
+  </ListView.ItemTemplate>
+</ListView>
+```
+
+[^ViewToView]: Binding zwischen zwei UI-Komponenten auf der selben Page.
 
 ## Updaten von Daten
 text
