@@ -12,9 +12,7 @@ fontsize: 12pt
 ---
 
 \begin{center} \textbf{\uppercase{abstract}} \end{center}
-Im Folgenden Praxisprojekt ist es Ziel die Cross-Plattform Applikation "CrewRest" für Windows 10, Android und iOS zu erstellen. Als Technologien soll Microsoft UWP und Xamarin zum Einsatz kommen. Somit soll aus einer gemeinsamen Codebasis eine Applikation, lauffähig auf verschiedenen Betriebssysteme erzeugt werden. Als Programmiersprache kommt C# zum Einsatz. Der fachliche Hintergrund ist es, ein System für die Mitarbeiter einer Luftfahrtgesellschaft zu entwickeln, um Urlaubsanträge oder allgemeiner: Anträge für Abwesenheiten erstellen zu können und dessen Status einsehen zu können. Bei Möglichkeit ist es erwünschenswert eine Art Kalenderüberischt in der Applikation anzuzeigen, welche die Abwesenheitslage aller Mitarbeiter darstellt, um mögliche Zeiträume für neue Abwesenheitsanträge sinnvoll anlegen zu können.
-
-# Wie Xamarin funktioniert
+Im Folgenden Praxisprojekt ist es Ziel die Cross-Plattform Applikation "CrewRest" für Windows 10, Android und iOS zu erstellen. Die zu erstellende Applikation soll als Prototyp zur Demonstration bei einer oder mehrerer Luftfahrtgesellschaften dienen. Wichtig ist dabei eine Umsetzung für unterschiedliche Plattformen bei mit möglichst wenig Aufwand. Als Technologien sollen Microsoft UWP und Xamarin zum Einsatz kommen. Somit soll aus einer gemeinsamen Codebasis eine Applikation, lauffähig auf verschiedenen Betriebssysteme erzeugt werden. Als Programmiersprache kommt C# zum Einsatz. Der fachliche Hintergrund ist, ein System für die Mitarbeiter einer Luftfahrtgesellschaft zu entwickeln, um Urlaubsanträge oder allgemeiner: Anträge für Abwesenheiten erstellen zu können, sowie dessen Status einsehen zu können. Bei Möglichkeit ist es erwünschenswert eine Art Kalenderüberischt in der Applikation anzuzeigen, welche die Abwesenheitslage in bestimmten Zeiträumen aller Mitarbeiter darstellt, um mögliche Zeiträume für neue Abwesenheitsanträge sinnvoll anlegen zu können.
 
 # Erstellung einer Cross-Plattform Applikation
 Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer Blank App[^BlankApp] Xamarin.Forms Portable und Xamarin.Forms Shared unterschieden.
@@ -42,6 +40,8 @@ Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der C
 [^BlankApp]: Ein neues, leeres Projekt für mehrere Zielbetriebssyssteme.
 
 # Eingesetzte Hardware
+???ggf. mit Benötigte Software in eine Section zusammenfassen???
+
 Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist folgende Hardware zum Einsatz gekommen.
 
 | Gerät           | OS                         | Version         | Zweck                                  |
@@ -218,7 +218,7 @@ Der Zugriff auf SOAP Services ist für die Anzeige und Erstellung von Daten in  
 
 Um speziell einen SOAP Service zu konsumieren, werden einer Instanz der Klasse `HttpClient` Request Header Informationen bestehend aus *Name* und *SOAP Operationname* zugewiesen. Anschließend wird asynchron eine HTTP Methode vom Typ POST mit URL und einem `string` im vom Service erwarteten XML-Format an den SOAP Service gesendet (der Request) um einen SOAP Response zu erhalten.
 
-```cs
+```{#SOAPHttpClientZugriff .cs .numberLines startFrom="1"}
 //...
 var client = new System.Net.Http.HttpClient();
 client.DefaultRequestHeaders.Add("SOAPAction", soapOperationName);
@@ -232,7 +232,7 @@ Der erhaltene Response wird anschließend auf seinen Status überprüft um zu en
 
 Aus dem erhaltenen Response vom Typ `string` wird mit hilfe der statischen Methode `Parse` der Klasse `XDocument` ein automatisches parsing durchgeführt. Anschließend werden die vom SOAP Service definierten Namespaces abgefragt und gespeichert. Nun kann der eigentliche Inhalt, also die gewünschten Informationen aus dem Response gefiltert werden, da die SOAP Serivce Metadaten mit hilfe der zuvor abgefragten Namespaces lokalisiert und entfernt werden können. Aus dem erhaltenen, gefilterten `string` wird schließlich ein durch deserialisieren ein Objekt der passenden Klassen erzeugt.
 
-```cs
+```{#SoapResponseParsing .cs .numberLines startFrom="1"}
 // parsen des string SOAP Responses
 var xmlContent = XDocument.Parse(response);
 XNamespace soap = XNamespace.Get("http://schemas.xmlsoap.org/soap/envelope/");
@@ -417,6 +417,8 @@ void urlaubsantraegeFiltern()
 ## Dynamisches hinzufügen von Komponenten
 Die Page AntraegeHinzufuegen der CrewRest App besteht zu einem großen Teil aus dynamischen UI-Komponenten, d.h. sie beinhaltet viele Komponenten die nur unter bestimmten Voraussetzungen anzuzeigen sind. In diesem Fall ist es nötig die betroffenen Komponenten im Code-Behind der entsprechend Page anzulegen. Um sich trotz der dynamischen Komponenten nicht mit deren Anordnung auseinandersetzen zu müssen, ist es sinnvoll die statischen Komponenten und Layouts vorher auf der XAML-Page zu definieren.
 
+???beispiel???
+
 ## Dynamisches UI Verhalten und Validierung von Eingaben
 In CrewRest werden Trigger und Behavior zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Meachanismus ist das aktivieren und deaktiveren von Button oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
 
@@ -434,16 +436,56 @@ In CrewRest werden Trigger und Behavior zur Sicherstellung korrekter Eingaben ei
 
 Behaviors unterscheiden sich von Triggern durch ihre erweiterte Funktionalität. Ein Behavior kann alles was auch ein Trigger kann. Ein Behavior benötigt im Gegensatz zu Triggern aber immer eine programmatische Implementierung in C#. Ist die Umsetzung eines dynamischen UI Verhaltens oder einer Restriktion also mit einem Trigger möglich, wird empfohlen auch einen Trigger statt eines Behaviors zu nutzen [@MicrosoftXamarinBook, S. 868].
 
-### Triggers
-text
+### Trigger in CrewRest
+In CrewRest ist ein DataTrigger angelegt, um beim Hinzufügen von Urlaubsanträgen nur dann das Speichern via *Speichern*-Button zu erlauben, wenn alle Pflichtfelder ausgefüllt sind. Dazu hat der im Button integrierte DataTrigger eine Referenz auf die Textlänge eines Eingabefelds (in diesem Fall auf das Kommentarfeld) und ein Property `Value` mit dem Wert 0. Außerdem einen Setter, welcher die Aktion festlegt wenn der definierte Fall (Textlänge = 0) eintritt. Der `Setter` bewirkt also das Setzen des `IsEnabled` Property des Button auf `False` wenn das Eingabefeld für *Kommentar* leer ist.
 
-### Behaviors
-AntragszeitraumValidator.cs
+```{caption="CrewRest DataTrigger" .xml}
+<!-- ... -->
+<EntryCell x:Name="kommentarExtEC" Label="Kommentar" />
+<!-- ... -->
+<Button Text="Speichern" Clicked="OnSpeichernBtnClicked">
+  <Button.Triggers>
+    <DataTrigger TargetType="Button"
+     Binding="{Binding Source={x:Reference kommentarExtEC}, Path=Text.Length}"
+     Value="0">
+      <Setter Property="IsEnabled" Value="False" />
+    </DataTrigger>
+  </Button.Triggers>
+</Button>
+<!-- ... -->
+```
+
+### Behavior in CrewRest
+In CrewRest ist ein Behavior zum validieren von Datumseingaben implementiert. Ist eine Datumsauswahl erfolgt, wird überprüft ob Datum ein bereits vergangenes ist oder ob das "von Datum" hinter dem "bis Datum" liegt. Trifft eine dieser Bedingungen zu, wird die Hintergrundfarbe des Datumeingabefelds auf Orange oder Rot gesetzt. Die Validation erfolgt in einer extra dafür angelegten Klasse `AntragszeitraumValidator` die die generische Klasse `Behavior<DatePicker>` erweitert, um ein UI-Element vom Typ `DatePicker` prüfen zu können. Die überschriebene Methode `OnAttachedTo(BindableObject)` verweist dann auf die Methode `HandleDateChanged(...)` und übergibt das BindableObject[^BindableObject](die DatePicker Komponente) um die eigentliche Validierungslogik aufzurufen. Um der UI-Komponente *vonDatePicker* vom Typ `DatePicker` ein Behavior zuzuweisen, wird der Name der Klasse über den XML-Tag `<DatePicker.Behaviors>` angegeben. Das Prefix `local` beinhaltet den Namespace in welchem sich die Klasse `AntragszeitraumValidator` befindet und wird im Header der XAML-Page angegeben.
+
+```xml
+<DatePicker x:Name="vonDatePicker" DateSelected="compareVonBis">
+    <DatePicker.Behaviors>
+        <local:AntragszeitraumValidator/>
+    </DatePicker.Behaviors>
+</DatePicker>
+```
+
+```{#DatePickerBehavior .cs .numberLines startFrom="1"}
+void HandleDateChanged(object sender, DateChangedEventArgs e)
+        {
+            if (((DatePicker)sender).BackgroundColor == Color.Red)
+                return;
+            else if (e.NewDate < DateTime.Today)
+                ((DatePicker)sender).BackgroundColor = Color.FromHex("FFA500");
+            else
+                ((DatePicker)sender).BackgroundColor = Color.Default;
+        }
+```
+
+[^BindableObject]: Objekt welches die Zuweisung eines Data Bindings ermöglicht (z.B. eine Xamarin UI-Komponente) [@MicrosoftXamarinBook, S. 234].
 
 ## EmbeddedResource
 Plattformübergreifendes Anzeigen von Bildern
 
 ## Einschränkungen und Probleme bei der Cross-Plattform Entwicklung
 - Anfang Probleme beim Darstellen von ListView Details, erst mit Update behoben
+
+## Einbindung einer Drittanbieter Kalender UI-Komponente
 
 # Literatur
