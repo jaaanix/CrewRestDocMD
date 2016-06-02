@@ -477,8 +477,23 @@ void HandleDateChanged(object sender, DateChangedEventArgs e)
 
 [^BindableObject]: Objekt welches die Zuweisung eines Data Bindings ermöglicht (z.B. eine Xamarin UI-Komponente) [@MicrosoftXamarinBook, S. 234].
 
-## EmbeddedResource
-Plattformübergreifendes Anzeigen von Bildern
+## Hinzufügen von EmbeddedResources zum Anzeigen von Bildern
+Um in einer Xamarin App ein Bild anzuzeigen wird die `Image` Komponente genutzt. Diese Komponente besitzt das Property `Source`, welcher ein Objekt vom Typ `ImageSource` zugewisen wird, um die Quelle des anzuzeigendes Bilds festzulegen. Eine Bild kann aus verschiedene Quellen eingebunden werden, dazu bietet die Klasse `ImageSource` vier unterschiedliche statische Methoden an [@MicrosoftXamarinBook, S. 283]:
+
+- `FromUri`
+    - um ein Bild aus dem Web zu laden und anzuzeigen
+- `FromResource`
+    - um ein Bild anzuzeigen welches als EmbeddedResource[^EmbeddedResource] in der PCL abgelegt ist
+- `FromFile`
+    - um ein Bild aus dem jeweiligen gespeichert auf der jeweiligen Plattform anzuzeigen
+- `FromStream`
+    - um ein Bild erhalten aus einem `Stream` Objekt des .NET Framewoks anzuzeigen
+
+In CrewRest werden Bilderquellen über die Methode `FromResource` festgelegt. Durch diese Vorgehensweise ist es möglich, die benötigten Bilder in der PCL abzulegen, was dazu führt das die Bilder während dem Buildvorgang an die benötigte Stelle in der Verzeichnisstruktur der jeweiligen App abgelegt werden und somit zugreifbar sind. Würde statt dessen die Methode `FromFile` genutzt, wäre es nötig, die benötigten Bilder redundant in den jeweiligen Projekten für die Plattformen abzulegen. Die beiden Methoden haben ihre Vor- und Nachteile. Ist es beispielsweise gewünscht auf jedern Plattform unterschiedliche Bilder anzuzeigen, macht es mehr Sinn die Methode `FromFile` zu nutzen und die entsprechenden Bilder in den jeweiligen Projekten für die Plattformen abzulegen.
+
+Damit das plattformübergreifende nutzen von Bilder funktioniert und die Bilder während dem Buildvorgang für die jeweilige Plattform integriert werden, müssen alle Bilder via Visual Studio 2015 als "Eingebettete Ressource" angegeben werden. Des Weiteren muss in der Code-Behin Datei der Page auf der ein Bild angezeigt werden soll, ein Property vom Typ `ImageSource` angelegt werden [@MicrosoftXamarinBook, S. 289].
+
+[^EmbeddedResource]: Ressource die während dem Buildvorgang in die Verzeichnisstruktur der jeweiligen Plattform integriert wird.
 
 ## Einschränkungen und Probleme bei der Cross-Plattform Entwicklung
 - Anfang Probleme beim Darstellen von ListView Details, erst mit Update behoben
