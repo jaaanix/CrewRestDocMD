@@ -11,9 +11,6 @@ mainfontoptions: BoldItalicFont=Gentium Basic Bold Italic
 fontsize: 12pt
 ---
 
-\begin{center} \textbf{\uppercase{abstract}} \end{center}
-Im Folgenden Praxisprojekt ist es Ziel die Cross-Plattform Applikation "CrewRest" für Windows 10, Android und iOS zu erstellen. Die zu erstellende Applikation soll als Prototyp zur Demonstration bei einer oder mehrerer Luftfahrtgesellschaften dienen. Wichtig ist dabei eine Umsetzung für unterschiedliche Plattformen bei mit möglichst wenig Aufwand. Als Technologien sollen Microsoft UWP und Xamarin zum Einsatz kommen. Somit soll aus einer gemeinsamen Codebasis eine Applikation, lauffähig auf verschiedenen Betriebssysteme erzeugt werden. Als Programmiersprache kommt C# zum Einsatz. Der fachliche Hintergrund ist, ein System für die Mitarbeiter einer Luftfahrtgesellschaft zu entwickeln, um Urlaubsanträge oder allgemeiner: Anträge für Abwesenheiten erstellen zu können, sowie dessen Status einsehen zu können. Bei Möglichkeit ist es erwünschenswert eine Art Kalenderüberischt in der Applikation anzuzeigen, welche die Abwesenheitslage in bestimmten Zeiträumen aller Mitarbeiter darstellt, um mögliche Zeiträume für neue Abwesenheitsanträge sinnvoll anlegen zu können.
-
 # Erstellung einer Cross-Plattform Applikation
 Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer Blank App[^BlankApp] Xamarin.Forms Portable und Xamarin.Forms Shared unterschieden.
 
