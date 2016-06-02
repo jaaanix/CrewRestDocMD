@@ -77,13 +77,14 @@ Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luf
 - Request/Response
 
 
-# Projektarchitektur
+# Projekt- und Verzeichnisstruktur
 - **Data**
     - Enthält Logik zum ansprechen/konsumieren der SOAP Services.
 - **Models**
     - Enthält C# Klassen mit Properties für die benötigten Attribute aus validen XML-Objekten für Requests und Responses.
 - **Views**
-    - Enthält in der die in CrewRest benötigten XAML Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegen sollte.
+    - Enthält die in CrewRest benötigten XAML Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegen sollte.
+    - Bei der Erstellung einer neuen Page enstehen also immer zwei Datein, zum Beispiel: `Page1.xaml` und `Page1.xaml.cs`
 
 [^codeBehind]: Einer XAML Page zugehörige C# Klasse um dessen Logik zu implementieren.
 
@@ -414,16 +415,30 @@ void urlaubsantraegeFiltern()
 ```
 
 ## Dynamisches hinzufügen von Komponenten
+Die Page AntraegeHinzufuegen der CrewRest App besteht zu einem großen Teil aus dynamischen UI-Komponenten, d.h. sie beinhaltet viele Komponenten die nur unter bestimmten Voraussetzungen anzuzeigen sind. In diesem Fall ist es nötig die betroffenen Komponenten im Code-Behind der entsprechend Page anzulegen. Um sich trotz der dynamischen Komponenten nicht mit deren Anordnung auseinandersetzen zu müssen, ist es sinnvoll die statischen Komponenten und Layouts vorher auf der XAML-Page zu definieren.
+
+## Dynamisches UI Verhalten und Validierung von Eingaben
+In CrewRest werden Trigger und Behavior zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Meachanismus ist das aktivieren und deaktiveren von Button oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
+
+- Trigger
+    - zum setzen von Properties bei Änderung eines anderen Property
+- EventTrigger
+    - zum Ausführen von Code in Abhänigkeit von einem Event
+- DataTrigger
+    - zum setzen von Properties bei Änderung eines gebundenen Property (DataBinding)
+    - *unterscheidet sich von den Anderen Trigger Arten, da hier ein Property eines anderen Objektes "überwacht" wird* [@MicrosoftXamarinBook, S. 853]
+- MultiTrigger
+    - zum setzen einer Properties bei Änderung einer Menge von anderen Properties
+
+[@MicrosoftXamarinBook, S. 836]
+
+Behaviors unterscheiden sich von Triggern durch ihre erweiterte Funktionalität. Ein Behavior kann alles was auch ein Trigger kann. Ein Behavior benötigt im Gegensatz zu Triggern aber immer eine programmatische Implementierung in C#. Ist die Umsetzung eines dynamischen UI Verhaltens oder einer Restriktion also mit einem Trigger möglich, wird empfohlen auch einen Trigger statt eines Behaviors zu nutzen [@MicrosoftXamarinBook, S. 868].
+
+### Triggers
 text
 
-## Validierung von Eingaben
-text
-
-### DataTrigger
-text
-
-### Behavior
-text
+### Behaviors
+AntragszeitraumValidator.cs
 
 ## EmbeddedResource
 Plattformübergreifendes Anzeigen von Bildern
