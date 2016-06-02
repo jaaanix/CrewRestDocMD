@@ -14,7 +14,7 @@ fontsize: 12pt
 # Erstellung einer Cross-Plattform Applikation
 Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer Blank App[^BlankApp] Xamarin.Forms Portable und Xamarin.Forms Shared unterschieden.
 
-Im Falle der CrewRest Applikation wurde sich aufgrund von Unwissenheit für das standardmäßig ausgewählte PCL Projekt entschieden.
+Im Falle der CrewRest[^CrewRest] Applikation wurde sich aufgrund von Unwissenheit für das standardmäßig ausgewählte PCL Projekt entschieden.
 
 In beiden Fällen ist der in C# geschriebene Code Plattformübergreifend nutzbar, jedoch gibt er gewisse Unterschiede. Im Falle eines **Xamarin.Forms Portable (Portable Class Library (PCL))** Projekts ist der Code in einer dynamischen, verlinkten Codebibliothek zusammengefasst und wird von den plattformspezifischen Projekten referenziert und zu Laufzeit verfügbar gemacht. Bei einem **Xamarin.Forms Shared (Shared Asset Pro-ject (SAP))** Projekt hingegen, wird der gemeinsame Code jedem der einzelnen Projekte bei einem Buildvorgang hinzugefügt.[@MicrosoftXamarinBook S. 29-31]
 
@@ -29,19 +29,20 @@ Table: Unterschiede zwischen PCL und SAP Projekten
 
 Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann, gewisse Bibliotheken lassen sich z.B. in Form eines NuGet[^NuGet] Packages nachträglich installieren.
 
-Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Kapitel [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Meachanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen von SOAP Requests und Responses kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisirten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
+Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Abschnitt [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Mechanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen von SOAP Requests[^Request] und Responses[^Response] kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisirten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
 
-[^ifOS]: Meachanismus in SAP Projekten um plattformspezifischen Code auszuführen
+[^CrewRest]: Name der in disem Praxisprojekt erstellten Applikation.
+[^Response]: Im Kontext dieser Dokumentation eine Antwort eines SOAP-Service.
+[^Request]: Im Kontext dieser Dokumentation eine Anfrage an einen SOAP-Service.
+[^ifOS]: Mechanismus in SAP Projekten um plattformspezifischen Code auszuführen.
 [^IOC]: Inversion Of Control, Alternative zu #if-Syntax für plattformspezifischen Code in PCL Projekten.
 [^NuGet]: Packet Verwaltung von Visual Studio 2015.
 [^BlankApp]: Ein neues, leeres Projekt für mehrere Zielbetriebssyssteme.
 
-# Eingesetzte Hardware
-???ggf. mit Benötigte Software in eine Section zusammenfassen???
+# Eingesetzte Hard- und Software
+Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist folgende Hardware zum Einsatz gekommen:
 
-Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist folgende Hardware zum Einsatz gekommen.
-
-| Gerät           | OS                         | Version         | Zweck                                  |
+| Gerät           | OS                     | Version         | Zweck                                  |
 |-----------------|------------------------|-----------------|----------------------------------------|
 | iPhone 5        | iOS                    | 9.3.1           | Testen der App auf iOS                 |
 | Asus Nexus 7    | Android                | 6.0 Marshmallow | Testen der App auf Android             |
@@ -50,7 +51,7 @@ Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist fo
 
 Table: Hardware und Betriebssysteme
 
-# Benötigte Software (APIs, Tools, IDEs, Emulatoren, Simulatoren)
+Außerdem wurde folgende Software verwendet:
 
 | Software           | Art | Version                | Zweck                                         |
 |--------------------|-----|------------------------|-----------------------------------------------|
@@ -61,18 +62,11 @@ Table: Hardware und Betriebssysteme
 Table: Eingesetzte Software und APIs
 
 # SOAP
-Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Services erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus belibigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
+Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Services erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus beliebigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
 
 [^xmlFormat]: Extensible Markup Language Format, ist eine Auszeichnungssprache für den plattform- und implementationsunabhängigen Austausch von Daten zwischen Computersystemen [@XML].
 [^faultResponse]: XML-Format Respone vom SOAP Service, welcher einen fehler im Request signalisiert.
 [^soap]: Simple Object Access Protocol [@SOAP].
-
-
-- Simple Object Access Protocol
-- XML-Format
-- Operations
-- Request/Response
-
 
 # Projekt- und Verzeichnisstruktur
 - **Data**
@@ -81,12 +75,12 @@ Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luf
     - Enthält C# Klassen mit Properties für die benötigten Attribute aus validen XML-Objekten für Requests und Responses.
 - **Views**
     - Enthält die in CrewRest benötigten XAML Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegen sollte.
-    - Bei der Erstellung einer neuen Page enstehen also immer zwei Datein, zum Beispiel: `Page1.xaml` und `Page1.xaml.cs`
+    - Bei der Erstellung einer neuen Page entstehen also immer zwei Dateien, zum Beispiel: `Page1.xaml` und `Page1.xaml.cs`
 
 [^codeBehind]: Einer XAML Page zugehörige C# Klasse um dessen Logik zu implementieren.
 
 # XAML vs. Code
-Xamarin.Forms erlaubt das designen von Oberflächen bzw. Pages auf zwei unterschiedliche Arten, entweder die Pages werden via XAML deklarativ entworfen oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingsetzten Framework ab. Durch die hierachische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so viel wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. DataTrigger können so bis zu einer gewissen Komplexheit angelegt werden (siehe Kapitel [DataTrigger]).
+Xamarin.Forms erlaubt das Entwerfen von Oberflächen bzw. Pages auf zwei unterschiedliche Arten, entweder die Pages werden via XAML deklarativ entworfen oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so viel wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
 
 [^wpf]: Ein von Microsoft angebotenes GUI Framework auf Basis von .NET [@WPF].
 
@@ -97,18 +91,18 @@ Xamarin.Forms bietet mit der Subklasse `Layouts` (der Oberklasse `View`) folgend
 
 [@Layouts]
 
-Die in der Grafik [XamarinFormsLayouts](#XamarinFormsLayouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung [XamarinFormsPages](#XamarinFormsPages) dargestellten Anordungsseiten der Klasse `Pages` [@MicrosoftXamarinBook S. 1020]:
+Die in der Grafik [XamarinFormsLayouts](#XamarinFormsLayouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung [XamarinFormsPages](#XamarinFormsPages) dargestellten Anordnungsseiten der Klasse `Pages` [@MicrosoftXamarinBook S. 1020]:
 
 ![XamarinFormsPages](img/xamarin_pages.png "Xamarin.Forms Pages")
 
 [@Pages]
 
-Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Beziehung[^parentChild], bei welcher der folgende Grundsatz für die Anordungsbeziehung gilt:
+Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Beziehung[^parentChild], bei welcher der folgende Grundsatz für die Anordnungsbeziehung gilt:
 "Children have requests, but parents lay down the law." [@MicrosoftXamarinBook S.  1055].
 
-Das in CrewRest am häufigsten verwendete Layout ist das StackLayout, in welchem sich über das Property "Orientation" die Ausrichtung festlegen lässt, "horizontal" oder "vertical". Die im StackLayout liegenden UI-Elemente werden darin entweder horizontal oder vertikal aneinandergreiht.
+Das in CrewRest am häufigsten verwendete Layout ist das StackLayout, in welchem sich über das Property "Orientation" die Ausrichtung festlegen lässt, "horizontal" oder "vertical". Die im StackLayout liegenden UI-Elemente werden darin entweder horizontal oder vertikal aneinandergereiht.
 
-Im folgenden Beispiel der CrewRest App lässt sich die hierachische Anordnung von UI-Elementen erkennen. Dargestellt ist die Seite `AntraegeUeberischt.xaml`, welche aus einer *MasterDetailPage* mit den einzelnen Abschnitten `<MasterDetailPage.Master>` und `<MasterDetailPage.Detail>` besteht und dessen Ansicht zur Lauftzeit in Form eines Screenshots [AntraegeUeberischt](#AntraegeUeberischt).
+Im folgenden Beispiel der CrewRest App lässt sich die hierarchische Anordnung von UI-Elementen erkennen. Dargestellt ist die Seite `AntraegeUeberischt.xaml`, welche aus einer *MasterDetailPage* mit den einzelnen Abschnitten `<MasterDetailPage.Master>` und `<MasterDetailPage.Detail>` besteht und dessen Ansicht zur Lauftzeit in Form eines Screenshots [AntraegeUeberischt](#AntraegeUeberischt).
 
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
@@ -182,9 +176,9 @@ Im folgenden Beispiel der CrewRest App lässt sich die hierachische Anordnung vo
 
 ![AntraegeUeberischt](img/antraege_uebersicht.png "Anträge Übersicht Page")
 
-[^parentChild]: hierachische Anordnung von UI-Elemten.
+[^parentChild]: hierarchische Anordnung von UI-Elemten.
 
-# Wie funktioniert das native Deployment der unterschiedlichen Betriebssysteme/Plattformen
+# Funktionsweise der nativen Deployments der unterschiedlichen Betriebssysteme/Plattformen
 - Windows UWP direkt auf Windows 10
 - Android via USB-Debug Mode
 - iOS via Remote Login auf Mac OSX und installiertem XCode sowie Xamarin Studio
@@ -205,7 +199,7 @@ Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Interm
 [^jit]: Just-in-time-Kompilierung, Code wird zur Laufzeit in nativen Maschinencode übersetzt. [@JIT]
 [^mono]: Open Source Implementierung des .NET Frameworks. [@Mono]
 [^IL]: Intermediate Language, eine Zwischensprache in die C# Applikationen übersetzt werden. [@CIL]
-[^aotc]: Kompiliert den Code vollständig vor der Ausführung, also nicht zur Laufzeit [@AOTC]
+[^aotc]: Kompiliert den Code vollständig vor der Ausführung, also nicht zur Laufzeit. [@AOTC]
 
 # Implementierung
 In den folgenden Abschnitten wird der Zweck der implementierten Komponenten erklärt und es wird auf Details der Implementierung von Komponenten der CrewRest App eingegangen.
@@ -227,7 +221,7 @@ var response = await client.PostAsync(uri, content);
 
 Der erhaltene Response wird anschließend auf seinen Status überprüft um zu entscheiden ob ein Fault Response oder der erwartete Response mit den gewünschten Daten vorliegt. Je nach Response Typ muss dieser dann entsprechend geparsed und anschließend deserialisiert werden. Dazu werden .NET Framework Klassen `XDocument`, `XNamespace` und `XmlSerializer` genutzt.
 
-Aus dem erhaltenen Response vom Typ `string` wird mit hilfe der statischen Methode `Parse` der Klasse `XDocument` ein automatisches parsing durchgeführt. Anschließend werden die vom SOAP Service definierten Namespaces abgefragt und gespeichert. Nun kann der eigentliche Inhalt, also die gewünschten Informationen aus dem Response gefiltert werden, da die SOAP Serivce Metadaten mit hilfe der zuvor abgefragten Namespaces lokalisiert und entfernt werden können. Aus dem erhaltenen, gefilterten `string` wird schließlich ein durch deserialisieren ein Objekt der passenden Klassen erzeugt.
+Aus dem erhaltenen Response vom Typ `string` wird mit Hilfe der statischen Methode `Parse` der Klasse `XDocument` ein automatisches parsing durchgeführt. Anschließend werden die vom SOAP Service definierten Namespaces abgefragt und gespeichert. Nun kann der eigentliche Inhalt, also die gewünschten Informationen aus dem Response gefiltert werden, da die SOAP Serivce Metadaten mit Hilfe der zuvor abgefragten Namespaces lokalisiert und entfernt werden können. Aus dem erhaltenen, gefilterten `string` wird schließlich ein durch deserialisieren ein Objekt der passenden Klassen erzeugt.
 
 ```{#SoapResponseParsing .cs .numberLines startFrom="1"}
 // parsen des string SOAP Responses
@@ -260,7 +254,7 @@ return urlaubsantraege;
 Um einen Request an den SOAP Service im XML-Format senden zu können, wird ein analoges Verfahren angewendet, wobei in diesem Fall kein erhaltener Response deserialisiert wird sondern ein von der App erzeugtes Objekt (z.B. ein Urlaubsantrage) serialisiert wird.
 
 ## Plattformspezifisches Verhalten via XAML Konfigurieren
-In manchen Fällen ist ein plattformspezifisches Verhalten der App unumgänglich. Ein Beispiel dafür ist das Top-Padding[^TopPadding] unter iOS. Wird das Top-Padding nicht gezielt eingestellt, werden die am obenren Rand angezeigten UI-Elemente teilweise von der Statusleiste des Betriebssystemes verdeckt. Konkret bedeutet das, dass unter iOS UI-Elemente von z.B. der Uhrzeit- oder Empfangsanzeige verdeckt werden.
+In manchen Fällen ist ein plattformspezifisches Verhalten der App unumgänglich. Ein Beispiel dafür ist das Top-Padding[^TopPadding] unter iOS. Wird das Top-Padding nicht gezielt eingestellt, werden die am oberen Rand angezeigten UI-Elemente teilweise von der Statusleiste des Betriebssystems verdeckt. Konkret bedeutet das, dass unter iOS UI-Elemente von z.B. der Uhrzeit- oder Empfangsanzeige verdeckt werden.
 
 Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeeinstellungen mit dem XAML-Tag <OnPlatform> zu festzulegen. Im folgenden Beispiel ist ein Padding für eine Seite vom Typ `ContentPage` festgelegt. Konfiguriert ist ein Top-Padding von 20px für iOS und ein Padding von 20px für alle Seiten auf Windows Phone 8.1.
 
@@ -281,7 +275,7 @@ Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeein
 [^TopPadding]: Der Abstand von UI-Elementen vom oberen Bildrand.
 
 ## Data Bindings
-Ein Data Binding stellt in Xamarin eine Beziehungen zwischen Properties von zwei Objekten dar, was in den meisten Fällen die Beziehungen zwischen einer UI-Komponente (z.B. ein TextLabel) und Daten-Objekten definiert. Dieser Meachanismus bewirkt, dass das eine Objekt durch ein Event eine Änderung des verbundenen Objekts erfährt. Es wird hier von der Verbindung zwischen Properties von zwei Objekten gesprochen, weil auch eine UI-Komponente die auf einer XAML-Page angelegt wurde zur Laufzeit der App ein Objekt ist [@DataBindings].
+Ein Data Binding stellt in Xamarin eine Beziehungen zwischen Properties von zwei Objekten dar, was in den meisten Fällen die Beziehungen zwischen einer UI-Komponente (z.B. ein TextLabel) und Daten-Objekten definiert. Dieser Mechanismus bewirkt, dass das eine Objekt durch ein Event eine Änderung des verbundenen Objekts erfährt. Es wird hier von der Verbindung zwischen Properties von zwei Objekten gesprochen, weil auch eine UI-Komponente die auf einer XAML-Page angelegt wurde zur Laufzeit der App ein Objekt ist [@DataBindings].
 
 Ein gutes Beispiel für ein sogenanntes View-to-View Binding[^ViewToView] liefert der Xamarin Online Guide. Im diesem Beispiel handelt es sich um zwei UI-Elemente (ein Label und ein Schieberegler) welche teilweise voneinander abhängie Eigenschaften (Properties) besitzen. Die Eigenschaft `Rotation` des Labels, ist an die Eigenschaft `Value` des Sliders gebunden. Wird nun der Wert der Sliders durch den Benutzer geändert, dreht sich das Label entsprechend. Wichtig ist ebenfalls das festlegen der Eigenschaft `BindingContext` mit dem Wert `x:Reference...` was einen Verweis auf die Instanz der angezeigten Page darstellt und auf die Eigenschaft `x:Name` des Sliders verweist.
 ```xml
@@ -298,7 +292,7 @@ Ein gutes Beispiel für ein sogenanntes View-to-View Binding[^ViewToView] liefer
            VerticalOptions="CenterAndExpand" />
 ```
 
-Nach dem gleichen Prinzip lässt sich ein Data Binding auch für ein C# Property der jewiligen Code-Behind Klasse der jeweiligen Page definieren. Im Fall der Liste mit Urlaubsanträgen in CrewRest ist dieser Meachanismus umgesetzt. Zu diesem Zweck ist die Collection `urlaubsantraegeListe` vom Typ `ObservableCollection<urlaubsantrag>`, gefüllt mit den Urlaubsanträgen, über das Property `ItemsSource` an die ListView Komponente gebunden:
+Nach dem gleichen Prinzip lässt sich ein Data Binding auch für ein C# Property der jeweiligen Code-Behind Klasse der jeweiligen Page definieren. Im Fall der Liste mit Urlaubsanträgen in CrewRest ist dieser Mechanismus umgesetzt. Zu diesem Zweck ist die Collection `urlaubsantraegeListe` vom Typ `ObservableCollection<urlaubsantrag>`, gefüllt mit den Urlaubsanträgen, über das Property `ItemsSource` an die ListView Komponente gebunden:
 `urlaubsantraegeListeView.ItemsSource = urlaubsantraegeListe;`
 Durch diese Zuweisung ist es wiederum möglich direkt auf der XAML-Page auf die Attribute der Collection zuzugreifen. Im folgenden XAML-Page Ausschnitt ist der Zugriff auf die einzelnen Attibute *antragsart*, *antragsstatus*, *beantragtVon* und *beantragtBis* zu sehen.
 
@@ -335,10 +329,10 @@ Durch diese Zuweisung ist es wiederum möglich direkt auf der XAML-Page auf die 
 
 [^ViewToView]: Binding zwischen zwei UI-Komponenten auf der selben Page.
 
-### Updaten von gebundenen UI-Elementen
+### Aktualisieren von Daten im User Interface
 Um eine UI-Komponente zu aktualisieren wenn ihr Wert an ein Property im Code-Behind gebunden ist, ist es nötig das Getter uns Setter für das gebundene Property implementiert sind.
 
-```cs
+```{#UpdateUIData .cs .numberLines startFrom="1"}
 private string meinText;
 public string MeinText
 {
@@ -361,14 +355,14 @@ Ist das Binding einer UI-Komponente wie der ListView in CrewRest an eine Collect
 Die Urlaubsanträge Liste zeigt dem User standardmäßig alle Urlaubsanträge eines bestimmten Jahres. Des Weiteren bietet die App die Möglichkeit die angezeigten Urlaubsanträge nach Monat (1-12) und Status (beantragt, geloescht, genehmigt, abgelehnt) zu filtern. Die Ausgewählten Werte der drei Filter werden mit einer AND-Beziehung kombiniert.
 
 ### Das Filtern nach Jahren
-Um die Urlaubsanträge eines bestimmten Jahres in CrewRest anzuzeigen, werden im Gegensatz zu den Filtern für Monat und Status keine vorhandenen Daten gefiltert, sondern es wird ein neuer SOAP-Request an den entsprechenden Service gesendet. Das hat den Grund, dass die genutzte SOAP-Operation des Services die Parameter *TLC* und *JAHR* benötigt um einen Urlaubsanträge Response zu erhalten. Das heißt es können immer nur Urlaubsantäge eines gesamten Jahres erhalten werden.
+Um die Urlaubsanträge eines bestimmten Jahres in CrewRest anzuzeigen, werden im Gegensatz zu den Filtern für Monat und Status keine vorhandenen Daten gefiltert, sondern es wird ein neuer SOAP-Request an den entsprechenden Service gesendet. Das hat den Grund, dass die genutzte SOAP-Operation des Services die Parameter *TLC* und *JAHR* benötigt um einen Urlaubsanträge Response zu erhalten. Das heißt es können immer nur Urlaubsanträge eines gesamten Jahres erhalten werden.
 
 ### Das Filtern nach Monat und Status
 Wird ein Monat oder Status ausgewählt, wird dem jeweiligen Property (FilterMonat oder FilterStatus) der gewählte Wert der Auswahlliste zugewiesen. Anschließend wird die eigentliche Filterung durch die Methode `urlaubsantraegeFiltern` ausgeführt. Die Methode `urlaubsantraegeFiltern` speichert dann alle Urlaubsanträge die gefiltert wurde in eine neue Liste vom Typ `List<urlaubsantrag>`, welche schließlich dem `ItemSource` Property des ListView UI-Elements zugewiesen wird, um die gefilterten Urlaubsanträge anzuzeigen.
 
 Der Button "Reset" setzt die Indizes der Auswahllisten zurück und setzt die das `ItemSource` Property der ListView Komponente wieder auf die ungefilterte Collection zurück. Die Liste wird dann wieder ungefiltert angezeigt.
 
-```cs
+```{#UrlaubsantraegeFilter .cs .numberLines startFrom="1"}
 void OnMonatPickerSelectionChanged(object sender, EventArgs args)
 {
     Picker picker = (Picker)sender;
@@ -412,12 +406,64 @@ void urlaubsantraegeFiltern()
 ```
 
 ## Dynamisches hinzufügen von Komponenten
-Die Page AntraegeHinzufuegen der CrewRest App besteht zu einem großen Teil aus dynamischen UI-Komponenten, d.h. sie beinhaltet viele Komponenten die nur unter bestimmten Voraussetzungen anzuzeigen sind. In diesem Fall ist es nötig die betroffenen Komponenten im Code-Behind der entsprechend Page anzulegen. Um sich trotz der dynamischen Komponenten nicht mit deren Anordnung auseinandersetzen zu müssen, ist es sinnvoll die statischen Komponenten und Layouts vorher auf der XAML-Page zu definieren.
+Die Page[^Page] "AntraegeHinzufuegen" der CrewRest App besteht zu einem großen Teil aus dynamischen UI-Komponenten, d.h. sie beinhaltet viele Komponenten die nur unter bestimmten Voraussetzungen anzuzeigen sind. In diesem Fall ist es nötig die betroffenen Komponenten im Code-Behind der entsprechend Page anzulegen. Um sich trotz der dynamischen Komponenten nicht mit deren Anordnung auseinandersetzen zu müssen, ist es sinnvoll die statischen Komponenten und Layouts vorher auf der XAML-Page zu definieren.
 
-???beispiel???
+Für diese Anforderung ist eine XAML-Page mit einer `<TableView>` Komponente angelegt, welche wiederum `<TableSection>` Elemente beinhaltet. Jeder dieser Abschnitte in der `<TableView>` besitzt einen Identifier und wird aus dem Code-Behind angesprochen um während der Laufzeit von CrewRest UI-Elemente hinzuzufügen oder zu entfernen.
+
+Es folgt ein kurzer Ausschnitt der XAML-Page sowie des Code-Behind um die Beziehung zwischen XAML-Page und Code-Behind zu verdeutlichen.
+
+In folgendem XML Code ist der `<TableView>` Abschnitt mit dem Identifier "variabelTableSection" definiert. Des Weiteren sind auch Identifier für die Komponenten `ViewCell` und `StackLayout` definiert, welche in der C# Methode `VariabelSwitchCell_OnChanged(...)` genutzt werden um UI-Komponenten basierend auf der Benutzereingabe hinzuzufügen bzw. zu entfernen.
+
+```xml
+<TableSection x:Name="variabelTableSection">
+    <ViewCell x:Name="wunschStartdatumCell">
+        <StackLayout x:Name="wunschStartdatumStack" Orientation="Horizontal">
+            <StackLayout.Padding>
+                <OnPlatform x:TypeArguments="Thickness" iOS="15, 0, 0, 0" Android="15, 0, 0, 0"/>
+            </StackLayout.Padding>
+        </StackLayout>
+    </ViewCell>
+</TableSection>
+```
+
+```{#DynamicUIComponent .cs .numberLines startFrom="1"}
+private void VariabelSwitchCell_OnChanged(object sender, ToggledEventArgs e)
+{
+    if (e.Value == true)
+    {
+        variabelTableSection.Title = "Variabler Zeitraum";
+        // UI-Elemente fuer Variablen Urlaubsantrag anzeigen
+        anzahlTageEntry = new EntryCell() {
+            Label = "Anzahl Tage",
+            Keyboard = Keyboard.Numeric };
+        minAnzahlTageEntry = new EntryCell() {
+            Label = "mindestens",
+            Keyboard = Keyboard.Numeric };
+        Label wunschStartdatumLabel = new Label() {
+            Text = "Wunsch Startdatum",
+            VerticalOptions = LayoutOptions.Center,
+            HorizontalOptions = LayoutOptions.StartAndExpand };
+        wunschStartdatumDatePicker = new DatePicker();
+        wunschStartdatumDatePicker.DateSelected += compareVonBis;
+        wunschStartdatumStack.Children.Add(wunschStartdatumLabel);
+        wunschStartdatumStack.Children.Add(wunschStartdatumDatePicker);
+        wunschStartdatumCell.View = wunschStartdatumStack;
+        variabelTableSection.Add(anzahlTageEntry);
+        variabelTableSection.Add(minAnzahlTageEntry);
+    }
+    else if (e.Value == false)
+    {
+        // UI-Elemente und Titel der TableSection entfernen
+        variabelTableSection.Clear();
+        variabelTableSection.Title = "";
+    }
+
+}
+```
+[^Page]: Die Ansicht einer Seite in der CrewRest App.
 
 ## Dynamisches UI Verhalten und Validierung von Eingaben
-In CrewRest werden Trigger und Behavior zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Meachanismus ist das aktivieren und deaktiveren von Button oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
+In CrewRest werden Trigger und Behavior zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Mechanismus ist das aktivieren und deaktivieren von Button oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
 
 - Trigger
     - zum setzen von Properties bei Änderung eines anderen Property
@@ -453,7 +499,7 @@ In CrewRest ist ein DataTrigger angelegt, um beim Hinzufügen von Urlaubsanträg
 ```
 
 ### Behavior in CrewRest
-In CrewRest ist ein Behavior zum validieren von Datumseingaben implementiert. Ist eine Datumsauswahl erfolgt, wird überprüft ob Datum ein bereits vergangenes ist oder ob das "von Datum" hinter dem "bis Datum" liegt. Trifft eine dieser Bedingungen zu, wird die Hintergrundfarbe des Datumeingabefelds auf Orange oder Rot gesetzt. Die Validation erfolgt in einer extra dafür angelegten Klasse `AntragszeitraumValidator` die die generische Klasse `Behavior<DatePicker>` erweitert, um ein UI-Element vom Typ `DatePicker` prüfen zu können. Die überschriebene Methode `OnAttachedTo(BindableObject)` verweist dann auf die Methode `HandleDateChanged(...)` und übergibt das BindableObject[^BindableObject](die DatePicker Komponente) um die eigentliche Validierungslogik aufzurufen. Um der UI-Komponente *vonDatePicker* vom Typ `DatePicker` ein Behavior zuzuweisen, wird der Name der Klasse über den XML-Tag `<DatePicker.Behaviors>` angegeben. Das Prefix `local` beinhaltet den Namespace in welchem sich die Klasse `AntragszeitraumValidator` befindet und wird im Header der XAML-Page angegeben.
+In CrewRest ist ein Behavior zum Validieren von Datumseingaben implementiert. Ist eine Datumsauswahl erfolgt, wird überprüft ob Datum ein bereits vergangenes ist oder ob das "von Datum" hinter dem "bis Datum" liegt. Trifft eine dieser Bedingungen zu, wird die Hintergrundfarbe des Datumeingabefelds auf Orange oder Rot gesetzt. Die Validation erfolgt in einer extra dafür angelegten Klasse `AntragszeitraumValidator` die die generische Klasse `Behavior<DatePicker>` erweitert, um ein UI-Element vom Typ `DatePicker` prüfen zu können. Die überschriebene Methode `OnAttachedTo(BindableObject)` verweist dann auf die Methode `HandleDateChanged(...)` und übergibt das BindableObject[^BindableObject](die DatePicker Komponente) um die eigentliche Validierungslogik aufzurufen. Um der UI-Komponente *vonDatePicker* vom Typ `DatePicker` ein Behavior zuzuweisen, wird der Name der Klasse über den XML-Tag `<DatePicker.Behaviors>` angegeben. Das Prefix `local` beinhaltet den Namespace in welchem sich die Klasse `AntragszeitraumValidator` befindet und wird im Header der XAML-Page angegeben.
 
 ```xml
 <DatePicker x:Name="vonDatePicker" DateSelected="compareVonBis">
@@ -489,7 +535,7 @@ Um in einer Xamarin App ein Bild anzuzeigen wird die `Image` Komponente genutzt.
 - `FromStream`
     - um ein Bild erhalten aus einem `Stream` Objekt des .NET Framewoks anzuzeigen
 
-In CrewRest werden Bilderquellen über die Methode `FromResource` festgelegt. Durch diese Vorgehensweise ist es möglich, die benötigten Bilder in der PCL abzulegen, was dazu führt das die Bilder während dem Buildvorgang an die benötigte Stelle in der Verzeichnisstruktur der jeweiligen App abgelegt werden und somit zugreifbar sind. Würde statt dessen die Methode `FromFile` genutzt, wäre es nötig, die benötigten Bilder redundant in den jeweiligen Projekten für die Plattformen abzulegen. Die beiden Methoden haben ihre Vor- und Nachteile. Ist es beispielsweise gewünscht auf jedern Plattform unterschiedliche Bilder anzuzeigen, macht es mehr Sinn die Methode `FromFile` zu nutzen und die entsprechenden Bilder in den jeweiligen Projekten für die Plattformen abzulegen.
+In CrewRest werden Bilderquellen über die Methode `FromResource` festgelegt. Durch diese Vorgehensweise ist es möglich, die benötigten Bilder in der PCL abzulegen, was dazu führt das die Bilder während dem Buildvorgang an die benötigte Stelle in der Verzeichnisstruktur der jeweiligen App abgelegt werden und somit zugreifbar sind. Würde statt dessen die Methode `FromFile` genutzt, wäre es nötig, die benötigten Bilder redundant in den jeweiligen Projekten für die Plattformen abzulegen. Die beiden Methoden haben ihre Vor- und Nachteile. Ist es beispielsweise gewünscht auf jeder Plattform unterschiedliche Bilder anzuzeigen, macht es mehr Sinn die Methode `FromFile` zu nutzen und die entsprechenden Bilder in den jeweiligen Projekten für die Plattformen abzulegen.
 
 Damit das plattformübergreifende nutzen von Bilder funktioniert und die Bilder während dem Buildvorgang für die jeweilige Plattform integriert werden, müssen alle Bilder via Visual Studio 2015 als "Eingebettete Ressource" angegeben werden. Des Weiteren muss in der Code-Behin Datei der Page auf der ein Bild angezeigt werden soll, ein Property vom Typ `ImageSource` angelegt werden [@MicrosoftXamarinBook, S. 289].
 
@@ -509,6 +555,6 @@ In der anfänglichen Implementierung der MasterDetailPage trat ein Problem auf, 
 ## Einbindung einer Drittanbieter Kalender UI-Komponente
 Eine Anforderung an die CrewRest App ist das Anzeigen eines Kalenders in einer Montas- oder Wochenansicht mit speziell gekennzeichneten Tagen. Dieses Feature soll dem Anwender dabei helfen, die Abwesenheitslage von anderen Mitarbeitern überblicken zu können, um gezielt Urlaubsanträge in Zeiträumen mit geringer Anzahl anwesender Mitarbeiter zu verhindern.
 
-Zu diesem Zweck wird eine Drittanbierter-Komponente getestet welche einen Kalender in Monatsansicht darstellt, da Xamarin.Forms keine solche Komponente bietet. Der Anbieter der genutzten Kalender-Komponente ist das open source Projekt [Xamarin Froms Labs](https://github.com/XLabs/Xamarin-Forms-Labs) welches auf GitHub gehostet ist. Um die Features von Xamarin Forms Labs in CrewRest verfügbar zu machen, ist das Projekt über NuGet dem CrewRest Projekt hinzugefügt. Des Weiteren sind einige Konfigurationsschritte nötig, um die zusätzlichen Features nutzbar zu machen, welche sehr knapp durch die Dokumentation des open source Projekts beschrieben werden. Nach einigen Versuchen, die Kalender-Komponente von Xamarin Forms Labs zu nutzen, bleibt die Frage ob es für die gegebenen Anforderungen nutzbar ist noch offen. Der jetztige Stand von CrewRest zeigt die Kalender-Komponente unter iOS und Android an, unter Windows 10 jedoch wird diese nicht gerendert.
+Zu diesem Zweck wird eine Drittanbieter-Komponente getestet welche einen Kalender in Monatsansicht darstellt, da Xamarin.Forms keine solche Komponente bietet. Der Anbieter der genutzten Kalender-Komponente ist das open source Projekt [Xamarin Froms Labs](https://github.com/XLabs/Xamarin-Forms-Labs) welches auf GitHub gehostet ist. Um die Features von Xamarin Forms Labs in CrewRest verfügbar zu machen, ist das Projekt über NuGet dem CrewRest Projekt hinzugefügt. Des Weiteren sind einige Konfigurationsschritte nötig, um die zusätzlichen Features nutzbar zu machen, welche sehr knapp durch die Dokumentation des open source Projekts beschrieben werden. Nach einigen Versuchen, die Kalender-Komponente von Xamarin Forms Labs zu nutzen, bleibt die Frage ob es für die gegebenen Anforderungen nutzbar ist noch offen. Der jetzige Stand von CrewRest zeigt die Kalender-Komponente unter iOS und Android an, unter Windows 10 jedoch wird diese nicht gerendert.
 
 # Literatur
