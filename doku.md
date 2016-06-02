@@ -4,10 +4,10 @@ lang: de-DE
 documentclass: scrreprt
 bibliography: literatur.bib
 csl: din-1505-2-numeric-alphabetical.csl
-mainfont: Gentium Plus
-mainfontoptions: BoldFont=Gentium Basic Bold
-mainfontoptions: ItalicFont=Gentium Basic Italic
-mainfontoptions: BoldItalicFont=Gentium Basic Bold Italic
+mainfont: Charis SIL
+#mainfontoptions: BoldFont=Gentium Basic Bold
+#mainfontoptions: ItalicFont=Gentium Basic Italic
+#mainfontoptions: BoldItalicFont=Gentium Basic Bold Italic
 fontsize: 12pt
 ---
 
@@ -496,8 +496,19 @@ Damit das plattformübergreifende nutzen von Bilder funktioniert und die Bilder 
 [^EmbeddedResource]: Ressource die während dem Buildvorgang in die Verzeichnisstruktur der jeweiligen Plattform integriert wird.
 
 ## Einschränkungen und Probleme bei der Cross-Plattform Entwicklung
-- Anfang Probleme beim Darstellen von ListView Details, erst mit Update behoben
+Während der Entwicklung von CrewRest traten verschieden Probleme auf, welche den Implementierungsprozess erschwert und/oder verlangsamt haben.
+
+**Fehlende ListView Details unter Windows 10**
+
+Die anfänglich verwendete Version des Xamarin.Forms Framework hatte zur Folge das die durch das Property `Details` festgelegten Werte/Daten nicht in der ListView Komponente angezeigt wurden, während unter Android und iOS keine Probleme auftraten. Durch ein Update des Frameworks, welches via NuGet installiert wurde, konnte das Fehlverhalten behoben werden.
+
+**Unerwartetes Verhalten MasterDetailPage**
+
+In der anfänglichen Implementierung der MasterDetailPage trat ein Problem auf, welches dazu führte das die gesamte MasterDetailPage nicht angzeigt wurde. Der Auslöser des Problems war die fehlende Angabe des Property *Titel* der in der MasterDetailPage liegenden ContentPage. Dieses Verhalten trat während der späteren Entwicklung nicht mehr auf und wurde ggf. auch durch ein Update des Xamarin.Forms Framework beseitigt.
 
 ## Einbindung einer Drittanbieter Kalender UI-Komponente
+Eine Anforderung an die CrewRest App ist das Anzeigen eines Kalenders in einer Montas- oder Wochenansicht mit speziell gekennzeichneten Tagen. Dieses Feature soll dem Anwender dabei helfen, die Abwesenheitslage von anderen Mitarbeitern überblicken zu können, um gezielt Urlaubsanträge in Zeiträumen mit geringer Anzahl anwesender Mitarbeiter zu verhindern.
+
+Zu diesem Zweck wird eine Drittanbierter-Komponente getestet welche einen Kalender in Monatsansicht darstellt, da Xamarin.Forms keine solche Komponente bietet. Der Anbieter der genutzten Kalender-Komponente ist das open source Projekt [Xamarin Froms Labs](https://github.com/XLabs/Xamarin-Forms-Labs) welches auf GitHub gehostet ist. Um die Features von Xamarin Forms Labs in CrewRest verfügbar zu machen, ist das Projekt über NuGet dem CrewRest Projekt hinzugefügt. Des Weiteren sind einige Konfigurationsschritte nötig, um die zusätzlichen Features nutzbar zu machen, welche sehr knapp durch die Dokumentation des open source Projekts beschrieben werden. Nach einigen Versuchen, die Kalender-Komponente von Xamarin Forms Labs zu nutzen, bleibt die Frage ob es für die gegebenen Anforderungen nutzbar ist noch offen. Der jetztige Stand von CrewRest zeigt die Kalender-Komponente unter iOS und Android an, unter Windows 10 jedoch wird diese nicht gerendert.
 
 # Literatur
