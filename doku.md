@@ -12,11 +12,19 @@ fontsize: 12pt
 ---
 
 # Erstellung einer Cross-Plattform Applikation
-Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer Blank App[^BlankApp] Xamarin.Forms Portable und Xamarin.Forms Shared unterschieden.
+Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer *Blank App*[^BlankApp] *Xamarin.Forms Portable* und *Xamarin.Forms Shared* unterschieden.
 
-Im Falle der CrewRest[^CrewRest] Applikation wurde sich aufgrund von Unwissenheit für das standardmäßig ausgewählte PCL Projekt entschieden.
+Im Falle der CrewRest[^CrewRest] Applikation wurde sich aufgrund von höherer Verbreitung von *Xamarin.Forms Portable (Portable Class Library (PCL))* Projekten im Internet, auch ebenfalls für diese Art von Projekt entschieden. Des Weiteren ist der Unterschied der beiden Projektarten nur marginal, denn in beiden Fällen ist es möglich einmal geschriebenen Code über die verschiedenen Plattformen hinweg zu nutzen.
 
-In beiden Fällen ist der in C# geschriebene Code Plattformübergreifend nutzbar, jedoch gibt er gewisse Unterschiede. Im Falle eines **Xamarin.Forms Portable (Portable Class Library (PCL))** Projekts ist der Code in einer dynamischen, verlinkten Codebibliothek zusammengefasst und wird von den plattformspezifischen Projekten referenziert und zu Laufzeit verfügbar gemacht. Bei einem **Xamarin.Forms Shared (Shared Asset Pro-ject (SAP))** Projekt hingegen, wird der gemeinsame Code jedem der einzelnen Projekte bei einem Buildvorgang hinzugefügt.[@MicrosoftXamarinBook S. 29-31]
+**Xamarin.Forms Portable (Portable Class Library (PCL))**
+Bei einem PCL Projekt, wird der gemeinsame Code in einer Bibliothek zusammengefasst, welche zur Laufzeit von der jeweiligen App referenziert und genutzt wird.
+
+**Xamarin.Forms Shared (Shared Asset Project (SAP))**
+Bei einem SAP Projekt, wird der gemeinsame Code jeweils während dem Buildvorgang der jeweiligen Plattform hinzugefügt, also auch speziell für die jeweilige Plattform kompiliert.
+
+[@MicrosoftXamarinBook S. 29-31]
+
+Eine tabellarische Gegenüberstellung von PCL und SAP Projekten, erstellt von Ken Ross, zeigt noch weitere Unterschiede der beiden Projektarten auf:
 
 |                                                                | PCL   | SAP  |
 |----------------------------------------------------------------|-------|------|
@@ -69,18 +77,51 @@ Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luf
 [^soap]: Simple Object Access Protocol [@SOAP].
 
 # Projekt- und Verzeichnisstruktur
+Um im Softwareprojekt einen gewissen Grad von Modularität zu gewährleisten und von grundauf verschiedene Softwarekontexte voneinander zu trennen, sind im PCL-Projekt mehrere Verzeichnisse angelegt worden.
+
 - **Data**
-    - Enthält Logik zum ansprechen/konsumieren der SOAP Services.
+    - Enthält C#-Code Logik zum ansprechen/konsumieren der SOAP Services, ermöglicht also das empfangen und senden von Request und Response.
 - **Models**
-    - Enthält C# Klassen mit Properties für die benötigten Attribute aus validen XML-Objekten für Requests und Responses.
+    - Enthält C# Klassen mit Properties zum abbilden von verwendeten Daten, welche aus den SOAP-Services erhalten werden. Nach dem parsen der jeweiligen XML-Objekte, werden Instanzen der passenden Model-Klassen erzeugt.
 - **Views**
-    - Enthält die in CrewRest benötigten XAML Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegen sollte.
+    - Enthält die in CrewRest benötigten XAML-Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegt.
     - Bei der Erstellung einer neuen Page entstehen also immer zwei Dateien, zum Beispiel: `Page1.xaml` und `Page1.xaml.cs`
+
+All diese Verzeichnisse liegen (wie in Abbildung [ProjektmappenExplorer](#ProjektmappenExplorer) zu sehen) im *Shared Project* "CrewRest (Portable)" der Anwendung und werden von den einzelnen Plattformen genutzt.
+
+![ProjektmappenExplorer](img/projektmappen_eaxplorer.PNG "Projektmappen-Explorer")
 
 [^codeBehind]: Einer XAML Page zugehörige C# Klasse um dessen Logik zu implementieren.
 
 # XAML vs. Code
-Xamarin.Forms erlaubt das Entwerfen von Oberflächen bzw. Pages auf zwei unterschiedliche Arten, entweder die Pages werden via XAML deklarativ entworfen oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so viel wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
+Xamarin.Forms erlaubt das Entwerfen von Oberflächen auf zwei unterschiedliche Arten, entweder die Pages werden via XML auf einer XAML-Page deklarativ angelegt oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu Warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so oft wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
+
+Die folgenden Code-Ausschnitte zeigen beispielhaft die Erstellung eines Buttons mit jeweils den gleichen Attributen in XML (XAML) und C# (Code):
+
+```xml
+<Button Text="Hello"
+    Clicked="OnHelloBtnClicked"
+    VerticalOptions="Center"
+    HorizontalOptions="CenterAndExpand">
+<!-- ... -->
+</Button>
+```
+
+```{#XamarinButtonInCode .cs .numberLines startFrom="1"}
+// Normale Form
+Button helloBtn = new Button();
+helloBtn.Text = "Hello";
+helloBtn.VerticalOptions = LayoutOptions.Center;
+helloBtn.HorizontalOptions = LayoutOptions.CenterAndExpand;
+helloBtn.Clicked += OnHelloBtnClicked(...);
+
+// Etwas kuerzere Form
+Button helloBtn = new Button() {
+    Text = "Hello",
+    VerticalOptions = LayoutOptions.Center,
+    HorizontalOptions = LayoutOptions.CenterAndExpand };
+helloBtn.Clicked += OnHelloBtnClicked(...);
+```
 
 [^wpf]: Ein von Microsoft angebotenes GUI Framework auf Basis von .NET [@WPF].
 
