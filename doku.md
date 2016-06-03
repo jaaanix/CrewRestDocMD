@@ -94,7 +94,7 @@ All diese Verzeichnisse liegen (wie in Abbildung [ProjektmappenExplorer](#Projek
 [^codeBehind]: Einer XAML Page zugehörige C# Klasse um dessen Logik zu implementieren.
 
 # XAML vs. Code
-Xamarin.Forms erlaubt das Entwerfen von Oberflächen auf zwei unterschiedliche Arten, entweder die Pages werden via XML auf einer XAML-Page deklarativ angelegt oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu Warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so oft wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
+Xamarin.Forms erlaubt das Entwerfen von Oberflächen auf zwei unterschiedliche Arten, entweder die Pages werden via XML auf einer XAML-Page deklarativ angelegt oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so oft wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
 
 Die folgenden Code-Ausschnitte zeigen beispielhaft die Erstellung eines Buttons mit jeweils den gleichen Attributen in XML (XAML) und C# (Code):
 
@@ -219,23 +219,28 @@ Im folgenden Beispiel der CrewRest App lässt sich die hierarchische Anordnung v
 
 [^parentChild]: hierarchische Anordnung von UI-Elemten.
 
-# Funktionsweise der nativen Deployments der unterschiedlichen Betriebssysteme/Plattformen
-- Windows UWP direkt auf Windows 10
-- Android via USB-Debug Mode
-- iOS via Remote Login auf Mac OSX und installiertem XCode sowie Xamarin Studio
+# Funktionsweise des deployen der App für die unterschiedlichen Plattformen
 
-[@Deployment]
+Um die App auf den verschiedenen Plattformen zu installieren sind je nach Betriebssystem andere Schritte, sowie unterschiedliche Hard- und Software nötig. Besonders unter iOS gestaltet sich der Deploymentprozess auf ein echtes Gerät aufwendig, da ein Apple Developer Account angelegt und konfiguriert werden muss. Im folgenden wird der Vorgang des Xamarin Frameworks um eine App vorzubereiten und zu deployen für die jeweilige Plattform genauer erklärt.  
 
 ## Android
-Um aus einer Xamarin Cross-Plattform App eine Android Applikation zu bauen wird der implementierte C#-Code in Common Intermediate Language[^IL] übersetzt. Anschließend wird mit Hilfe von Mono[^mono] ein Android Package gepackt, welcher mit Hilfe von JIT'ing[^jit] ausgeführt werden kann. Während dieser Prozesse werden ungenutzte Klassen automatisch entfernt um die App zu optimieren.
+![AndroidDeployment](img/android_deployment.pdf)
 
-Für die technische Umsetzung wurde das Android Tablet im USB-Debug-Mode via USB mit dem Windows 10 verbunden wodurch ein direktes Deployment auf dem Gerät aus der Entwicklungsumgebung heraus möglich ist.
+Um aus einer Xamarin Cross-Plattform App eine Android Applikation zu bauen wird der implementierte C#-Code in Common Intermediate Language[^IL] übersetzt. Anschließend wird mit Hilfe von Mono[^mono] ein Android Package gepackt, welcher mit Hilfe von JIT'ing[^jit] ausgeführt werden kann. Während dieser Prozesse werden ungenutzte Klassen automatisch entfernt um die App zu optimieren. [@Deployment]
+
+Für die technische Umsetzung wird das Android Tablet im USB-Debug-Mode via USB mit dem Windows 10 verbunden wodurch ein direktes Deployment auf dem Gerät aus der Entwicklungsumgebung heraus möglich ist.
 
 ## iOS
-Für das iOS Deployment wird der C#-Code mittels Ahead-of-time-Compiler[^aotc] in ARM Assembly Code übersetzt und anschließend zu einer iOS App gepackt. Auch hier wird während dem Kompiliervorgang dafür gesorgt, dass nicht benötigte Klassen entfernt werden um die Größe der App zu reduzieren.
+![iOSDeployment](img/ios_deployment.pdf)
+
+Für das iOS Deployment wird der C#-Code mittels Ahead-of-time-Compiler[^aotc] in ARM Assembly Code übersetzt und anschließend zu einer iOS App gepackt. Auch hier wird während dem Kompiliervorgang dafür gesorgt, dass nicht benötigte Klassen entfernt werden um die Größe der App zu reduzieren. [@Deployment]
+
+Für ein Deplyoment muss außerdem der Windows 10 PC via Remote Login mit dem Mac OSX Gerät mit installiertem XCode sowie Xamarin Studio verbunden sein.
 
 ## Windows 10
-Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Intermediate Language übersetzt und in der .NET Laufzeitumgebung ausgeführt.
+![Windows10Deployment](img/windows10_deployment.pdf)
+
+Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Intermediate Language übersetzt und in der .NET Laufzeitumgebung ausgeführt. [@Deployment]
 
 [^jit]: Just-in-time-Kompilierung, Code wird zur Laufzeit in nativen Maschinencode übersetzt. [@JIT]
 [^mono]: Open Source Implementierung des .NET Frameworks. [@Mono]
