@@ -37,37 +37,42 @@ Table: Unterschiede zwischen PCL und SAP Projekten
 
 Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann, gewisse Bibliotheken lassen sich z.B. in Form eines NuGet[^NuGet] Packages nachträglich installieren.
 
-Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Abschnitt [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Mechanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen von SOAP Requests[^Request] und Responses[^Response] kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisirten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
+Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Abschnitt [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Mechanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine Komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen[^parsen] von SOAP Requests[^Request] und Responses[^Response] kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisierten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
 
-[^CrewRest]: Name der in disem Praxisprojekt erstellten Applikation.
+[^CrewRest]: Name der in diesem Praxisprojekt erstellten Applikation.
 [^Response]: Im Kontext dieser Dokumentation eine Antwort eines SOAP-Service.
 [^Request]: Im Kontext dieser Dokumentation eine Anfrage an einen SOAP-Service.
 [^ifOS]: Mechanismus in SAP Projekten um plattformspezifischen Code auszuführen.
 [^IOC]: Inversion Of Control, Alternative zu #if-Syntax für plattformspezifischen Code in PCL Projekten.
 [^NuGet]: Packet Verwaltung von Visual Studio 2015.
-[^BlankApp]: Ein neues, leeres Projekt für mehrere Zielbetriebssyssteme.
+[^BlankApp]: Ein neues, leeres Projekt für mehrere Ziel-Betriebssysteme.
+[^parsen]: Das Umwandeln eines Input-Formats zur Weiterverarbeitung in ein geeignetes Format.
 
 # Eingesetzte Hard- und Software
 Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist folgende Hardware zum Einsatz gekommen:
 
-| Gerät           | OS                     | Version         | Zweck                                  |
-|-----------------|------------------------|-----------------|----------------------------------------|
-| iPhone 5        | iOS                    | 9.3.1           | Testen der App auf iOS                 |
-| Asus Nexus 7    | Android                | 6.0 Marshmallow | Testen der App auf Android             |
-| Virtual Machine | Win 10 Insider Preview | Build 1511      | Entwickeln & Testen der App auf Win 10 |
-| MacBook Pro     | Mac OSX                | ???             | Kompilieren & deployen der App für iOS |
+| Gerät           | OS                     | Version            | Zweck                                  |
+|-----------------|------------------------|--------------------|----------------------------------------|
+| iPhone 5        | iOS                    | 9.3.1              | Testen der App auf iOS                 |
+| Asus Nexus 7    | Android                | 6.0 Marshmallow    | Testen der App auf Android             |
+| Virtual Machine | Win 10 Insider Preview | Build 1511         | Entwickeln & Testen der App auf Win 10 |
+| MacBook Pro     | OSX                    | 10.11.5 El Capitan | Kompilieren & deployen der App für iOS |
 
 Table: Hardware und Betriebssysteme
 
 Außerdem wurde folgende Software verwendet:
 
-| Software           | Art | Version                | Zweck                                         |
-|--------------------|-----|------------------------|-----------------------------------------------|
-| Viusal Studio 2015 | IDE | 14.0.25123.00 Update 2 | Entwicklung der Applikation                   |
-| Android API        | API | API Level 23           | Benötigt für Deployment auf Android Plattform |
-| iOS API            | API | ???                    | Benötigt für Deployment auf iOS Plattform     |
+| Software           | Art | Version                | Zweck                                            |
+|--------------------|-----|------------------------|--------------------------------------------------|
+| Viusal Studio 2015 | IDE | 14.0.25123.00          | Entwicklung der Applikation                      |
+| Android API        | API | API Level 23           | Benötigt für Deployment[^deployment] auf Android |
+| iOS API            | API | 9.3                    | Benötigt für Deployment auf iOS                  |
+| XCode              | IDE | 7.3                    | Benötigt für Deployment auf iOS                  |
+| Xamarin Studio     | IDE | 5.1.0                  | Benötigt für Deployment auf iOS                  |
 
 Table: Eingesetzte Software und APIs
+
+[^deployment]: Installieren einer kompilierten Applikation auf einem Zielsystem.
 
 # SOAP
 Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Services erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus beliebigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
@@ -77,12 +82,12 @@ Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luf
 [^soap]: Simple Object Access Protocol [@SOAP].
 
 # Projekt- und Verzeichnisstruktur
-Um im Softwareprojekt einen gewissen Grad von Modularität zu gewährleisten und von grundauf verschiedene Softwarekontexte voneinander zu trennen, sind im PCL-Projekt mehrere Verzeichnisse angelegt worden.
+Um im Softwareprojekt einen gewissen Grad von Modularität zu gewährleisten und von Grund auf verschiedene Softwarekontexte voneinander zu trennen, sind im PCL-Projekt mehrere Verzeichnisse angelegt worden.
 
 - **Data**
     - Enthält C#-Code Logik zum ansprechen/konsumieren der SOAP Services, ermöglicht also das empfangen und senden von Request und Response.
 - **Models**
-    - Enthält C# Klassen mit Properties zum abbilden von verwendeten Daten, welche aus den SOAP-Services erhalten werden. Nach dem parsen der jeweiligen XML-Objekte, werden Instanzen der passenden Model-Klassen erzeugt.
+    - Enthält C# Klassen mit Properties zum Abbilden von verwendeten Daten, welche aus den SOAP-Services erhalten werden. Nach dem parsen der jeweiligen XML-Objekte, werden Instanzen der passenden Model-Klassen erzeugt.
 - **Views**
     - Enthält die in CrewRest benötigten XAML-Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegt.
     - Bei der Erstellung einer neuen Page entstehen also immer zwei Dateien, zum Beispiel: `Page1.xaml` und `Page1.xaml.cs`
@@ -94,7 +99,7 @@ All diese Verzeichnisse liegen (wie in Abbildung [ProjektmappenExplorer](#Projek
 [^codeBehind]: Einer XAML Page zugehörige C# Klasse um dessen Logik zu implementieren.
 
 # XAML vs. Code
-Xamarin.Forms erlaubt das Entwerfen von Oberflächen auf zwei unterschiedliche Arten, entweder die Pages werden via XML auf einer XAML-Page deklarativ angelegt oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Enwticklung von CrewRest kommt so oft wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
+Xamarin.Forms erlaubt das Entwerfen von Oberflächen auf zwei unterschiedliche Arten, entweder die Pages werden via XML auf einer XAML-Page deklarativ angelegt oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum Designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Entwicklung von CrewRest kommt so oft wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
 
 Die folgenden Code-Ausschnitte zeigen beispielhaft die Erstellung eines Buttons mit jeweils den gleichen Attributen in XML (XAML) und C# (Code):
 
@@ -143,65 +148,47 @@ Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Bezieh
 
 Das in CrewRest am häufigsten verwendete Layout ist das StackLayout, in welchem sich über das Property "Orientation" die Ausrichtung festlegen lässt, "horizontal" oder "vertical". Die im StackLayout liegenden UI-Elemente werden darin entweder horizontal oder vertikal aneinandergereiht.
 
-Im folgenden Beispiel der CrewRest App lässt sich die hierarchische Anordnung von UI-Elementen erkennen. Dargestellt ist die Seite `AntraegeUeberischt.xaml`, welche aus einer *MasterDetailPage* mit den einzelnen Abschnitten `<MasterDetailPage.Master>` und `<MasterDetailPage.Detail>` besteht und dessen Ansicht zur Lauftzeit in Form eines Screenshots [AntraegeUeberischt](#AntraegeUeberischt).
+Im folgenden Beispiel der CrewRest App lässt sich die hierarchische Anordnung von UI-Elementen erkennen. Dargestellt ist ein gekürzter Ausschnitt des XML-Codes der Seite `AntraegeUeberischt.xaml`, welche aus einer *MasterDetailPage* mit den einzelnen Abschnitten `<MasterDetailPage.Master>` und `<MasterDetailPage.Detail>` besteht. Die aus der XAML-Page resultierende Ansicht zur Laufzeit ist im Screenshot [AntraegeUeberischt](#AntraegeUeberischt) zu sehen.
 
+<!-- ![AntraegeUeberischt](img/antraege_uebersicht.png "Anträge Übersicht Page") -->
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{img/antraege_uebersicht.png}
+    \caption{AntraegeUeberischt}
+\end{figure}
+
+\newpage
+`AntraegeUeberischt.xaml`
 ```xml
 <?xml version="1.0" encoding="utf-8" ?>
-<MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="CrewRest.Views.AntraegeUeberischt"
-             x:Name="AntraegeUeberischt" Title="Urlaubsanträge">
+<MasterDetailPage>
   <MasterDetailPage.Master>
     <ContentPage Title="Filter">
       <StackLayout Orientation="Vertical">
-        <Picker Title="Jahr"
-                x:Name="jahrFilterPicker"
-                SelectedIndexChanged="OnJahrPickerSelectionChanged" />
-        <Picker Title="Monat"
-                x:Name="monatFilterPicker"
-                SelectedIndexChanged="OnMonatPickerSelectionChanged" />
-        <Picker Title="Status"
-                x:Name="statusFilterPicker"
-                SelectedIndexChanged="OnStatusPickerSelectionChanged" />
-        <Button Text="Reset"
-                Clicked="OnFilterResetButtonClicked" />
+        <Picker Title="Jahr" x:Name="jahrFilterPicker" SelectedIndexChanged="OnJahrPickerSelectionChanged" />
+        <!-- weitere UI-Elemente... -->
       </StackLayout>
     </ContentPage>
   </MasterDetailPage.Master>
   <MasterDetailPage.Detail>
     <ContentPage>
-      <ContentPage.Padding>
-        <OnPlatform x:TypeArguments="Thickness"
-                    iOS="0, 20, 0, 0"
-                    WinPhone="20,20,20,20" />
-      </ContentPage.Padding>
+     <!-- weitere UI-Elemente... -->
       <StackLayout>
-        <ListView x:Name="urlaubsantraegeListeView"
-                  BindingContext="{x:Reference Name=AntraegeUeberischt}"
-                  ItemTapped="UrlaubsantragItemTapped">
+        <ListView>
           <ListView.Header>
-            <StackLayout Padding="0,0,0,0" />
-          </ListView.Header>
-          <ListView.Footer>
-            <StackLayout Padding="0,0,0,0" />
-          </ListView.Footer>
           <ListView.ItemTemplate>
             <DataTemplate x:Name="masterDataTemplate">
               <ViewCell>
                 <ContentView>
                   <StackLayout Orientation="Vertical">
                     <StackLayout Orientation="Horizontal">
-                      <Label Text="{Binding antragsart}"
-                             VerticalOptions="CenterAndExpand" />
-                      <Label Text="{Binding antragsstatus}"
-                             VerticalOptions="CenterAndExpand" />
+                      <Label Text="{Binding antragsart}" VerticalOptions="CenterAndExpand" />
+                      <!-- weitere UI-Elemente... -->
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                      <Label Text="{Binding beantragtVon,
-                          StringFormat='{0:dd.MM.yy}'}" />
-                      <Label Text=" - " />
-                      <Label Text="{Binding beantragtBis,
-                          StringFormat='{0:dd.MM.yy}'}}" />
+                      <Label Text="{Binding beantragtVon, StringFormat='{0:dd.MM.yy}'}" />
+                      <!-- weitere UI-Elemente... -->
                     </StackLayout>
                   </StackLayout>
                 </ContentView>
@@ -214,14 +201,13 @@ Im folgenden Beispiel der CrewRest App lässt sich die hierarchische Anordnung v
   </MasterDetailPage.Detail>
 </MasterDetailPage>
 ```
-
-![AntraegeUeberischt](img/antraege_uebersicht.png "Anträge Übersicht Page")
+\newpage
 
 [^parentChild]: hierarchische Anordnung von UI-Elemten.
 
 # Funktionsweise des deployen der App für die unterschiedlichen Plattformen
 
-Um die App auf den verschiedenen Plattformen zu installieren sind je nach Betriebssystem andere Schritte, sowie unterschiedliche Hard- und Software nötig. Besonders unter iOS gestaltet sich der Deploymentprozess auf ein echtes Gerät aufwendig, da ein Apple Developer Account angelegt und konfiguriert werden muss. Im folgenden wird der Vorgang des Xamarin Frameworks um eine App vorzubereiten und zu deployen für die jeweilige Plattform genauer erklärt.  
+Um die App auf den verschiedenen Plattformen zu installieren sind je nach Betriebssystem andere Schritte, sowie unterschiedliche Hard- und Software nötig. Besonders unter iOS gestaltet sich der Deployment-Prozess auf ein echtes Gerät aufwendig, da ein Apple Developer Account angelegt und konfiguriert werden muss. Im Folgenden wird der Vorgang des Xamarin Frameworks um eine App vorzubereiten und zu deployen für die jeweilige Plattform genauer erklärt.  
 
 ## Android
 ![AndroidDeployment](img/android_deployment.pdf)
@@ -315,15 +301,12 @@ Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeein
 </ContentPage>
 ```
 
-- XAML OnPlatform Tag
-- Probleme durch häufig wechselnde Versionen der verschiedenen Systeme
-
 [^TopPadding]: Der Abstand von UI-Elementen vom oberen Bildrand.
 
 ## Data Bindings
 Ein Data Binding stellt in Xamarin eine Beziehungen zwischen Properties von zwei Objekten dar, was in den meisten Fällen die Beziehungen zwischen einer UI-Komponente (z.B. ein TextLabel) und Daten-Objekten definiert. Dieser Mechanismus bewirkt, dass das eine Objekt durch ein Event eine Änderung des verbundenen Objekts erfährt. Es wird hier von der Verbindung zwischen Properties von zwei Objekten gesprochen, weil auch eine UI-Komponente die auf einer XAML-Page angelegt wurde zur Laufzeit der App ein Objekt ist [@DataBindings].
 
-Ein gutes Beispiel für ein sogenanntes View-to-View Binding[^ViewToView] liefert der Xamarin Online Guide. Im diesem Beispiel handelt es sich um zwei UI-Elemente (ein Label und ein Schieberegler) welche teilweise voneinander abhängie Eigenschaften (Properties) besitzen. Die Eigenschaft `Rotation` des Labels, ist an die Eigenschaft `Value` des Sliders gebunden. Wird nun der Wert der Sliders durch den Benutzer geändert, dreht sich das Label entsprechend. Wichtig ist ebenfalls das festlegen der Eigenschaft `BindingContext` mit dem Wert `x:Reference...` was einen Verweis auf die Instanz der angezeigten Page darstellt und auf die Eigenschaft `x:Name` des Sliders verweist.
+Ein gutes Beispiel für ein sogenanntes View-to-View Binding[^ViewToView] liefert der Xamarin Online Guide. Im diesem Beispiel handelt es sich um zwei UI-Elemente (ein Label und ein Schieberegler) welche teilweise voneinander abhängige Eigenschaften (Properties) besitzen. Die Eigenschaft `Rotation` des Labels, ist an die Eigenschaft `Value` des Sliders gebunden. Wird nun der Wert der Sliders durch den Benutzer geändert, dreht sich das Label entsprechend. Wichtig ist ebenfalls das festlegen der Eigenschaft `BindingContext` mit dem Wert `x:Reference...` was einen Verweis auf die Instanz der angezeigten Page darstellt und auf die Eigenschaft `x:Name` des Sliders verweist.
 ```xml
 <Label Text="ROTATION"
            BindingContext="{x:Reference Name=slider}"
@@ -340,7 +323,7 @@ Ein gutes Beispiel für ein sogenanntes View-to-View Binding[^ViewToView] liefer
 
 Nach dem gleichen Prinzip lässt sich ein Data Binding auch für ein C# Property der jeweiligen Code-Behind Klasse der jeweiligen Page definieren. Im Fall der Liste mit Urlaubsanträgen in CrewRest ist dieser Mechanismus umgesetzt. Zu diesem Zweck ist die Collection `urlaubsantraegeListe` vom Typ `ObservableCollection<urlaubsantrag>`, gefüllt mit den Urlaubsanträgen, über das Property `ItemsSource` an die ListView Komponente gebunden:
 `urlaubsantraegeListeView.ItemsSource = urlaubsantraegeListe;`
-Durch diese Zuweisung ist es wiederum möglich direkt auf der XAML-Page auf die Attribute der Collection zuzugreifen. Im folgenden XAML-Page Ausschnitt ist der Zugriff auf die einzelnen Attibute *antragsart*, *antragsstatus*, *beantragtVon* und *beantragtBis* zu sehen.
+Durch diese Zuweisung ist es wiederum möglich direkt auf der XAML-Page auf die Attribute der Collection zuzugreifen. Im folgenden XAML-Page Ausschnitt ist der Zugriff auf die einzelnen Attribute *antragsart*, *antragsstatus*, *beantragtVon* und *beantragtBis* zu sehen.
 
 ```xml
 <ListView x:Name="urlaubsantraegeListeView"
@@ -373,7 +356,7 @@ Durch diese Zuweisung ist es wiederum möglich direkt auf der XAML-Page auf die 
 </ListView>
 ```
 
-[^ViewToView]: Binding zwischen zwei UI-Komponenten auf der selben Page.
+[^ViewToView]: Binding zwischen zwei UI-Komponenten auf derselben Page.
 
 ### Aktualisieren von Daten im User Interface
 Um eine UI-Komponente zu aktualisieren wenn ihr Wert an ein Property im Code-Behind gebunden ist, ist es nötig das Getter uns Setter für das gebundene Property implementiert sind.
@@ -509,12 +492,12 @@ private void VariabelSwitchCell_OnChanged(object sender, ToggledEventArgs e)
 [^Page]: Die Ansicht einer Seite in der CrewRest App.
 
 ## Dynamisches UI Verhalten und Validierung von Eingaben
-In CrewRest werden Trigger und Behavior zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Mechanismus ist das aktivieren und deaktivieren von Button oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
+In CrewRest werden "Trigger" und "Behavior" zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Mechanismus ist das aktivieren und deaktivieren von Button oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
 
 - Trigger
     - zum setzen von Properties bei Änderung eines anderen Property
 - EventTrigger
-    - zum Ausführen von Code in Abhänigkeit von einem Event
+    - zum Ausführen von Code in Abhängigkeit von einem Event
 - DataTrigger
     - zum setzen von Properties bei Änderung eines gebundenen Property (DataBinding)
     - *unterscheidet sich von den Anderen Trigger Arten, da hier ein Property eines anderen Objektes "überwacht" wird* [@MicrosoftXamarinBook, S. 853]
@@ -581,9 +564,9 @@ Um in einer Xamarin App ein Bild anzuzeigen wird die `Image` Komponente genutzt.
 - `FromStream`
     - um ein Bild erhalten aus einem `Stream` Objekt des .NET Framewoks anzuzeigen
 
-In CrewRest werden Bilderquellen über die Methode `FromResource` festgelegt. Durch diese Vorgehensweise ist es möglich, die benötigten Bilder in der PCL abzulegen, was dazu führt das die Bilder während dem Buildvorgang an die benötigte Stelle in der Verzeichnisstruktur der jeweiligen App abgelegt werden und somit zugreifbar sind. Würde statt dessen die Methode `FromFile` genutzt, wäre es nötig, die benötigten Bilder redundant in den jeweiligen Projekten für die Plattformen abzulegen. Die beiden Methoden haben ihre Vor- und Nachteile. Ist es beispielsweise gewünscht auf jeder Plattform unterschiedliche Bilder anzuzeigen, macht es mehr Sinn die Methode `FromFile` zu nutzen und die entsprechenden Bilder in den jeweiligen Projekten für die Plattformen abzulegen.
+In CrewRest werden Bilderquellen über die Methode `FromResource` festgelegt. Durch diese Vorgehensweise ist es möglich, die benötigten Bilder in der PCL abzulegen, was dazu führt das die Bilder während dem Buildvorgang an die benötigte Stelle in der Verzeichnisstruktur der jeweiligen App abgelegt werden und somit zugreifbar sind. Würde stattdessen die Methode `FromFile` genutzt, wäre es nötig, die benötigten Bilder redundant in den jeweiligen Projekten für die Plattformen abzulegen. Die beiden Methoden haben ihre Vor- und Nachteile. Ist es beispielsweise gewünscht auf jeder Plattform unterschiedliche Bilder anzuzeigen, macht es mehr Sinn die Methode `FromFile` zu nutzen und die entsprechenden Bilder in den jeweiligen Projekten für die Plattformen abzulegen.
 
-Damit das plattformübergreifende nutzen von Bilder funktioniert und die Bilder während dem Buildvorgang für die jeweilige Plattform integriert werden, müssen alle Bilder via Visual Studio 2015 als "Eingebettete Ressource" angegeben werden. Des Weiteren muss in der Code-Behin Datei der Page auf der ein Bild angezeigt werden soll, ein Property vom Typ `ImageSource` angelegt werden [@MicrosoftXamarinBook, S. 289].
+Damit das plattformübergreifende nutzen von Bilder funktioniert und die Bilder während dem Buildvorgang für die jeweilige Plattform integriert werden, müssen alle Bilder via Visual Studio 2015 als "Eingebettete Ressource" angegeben werden. Des Weiteren muss in der Code-Behind Datei der Page auf der ein Bild angezeigt werden soll, ein Property vom Typ `ImageSource` angelegt werden [@MicrosoftXamarinBook, S. 289].
 
 [^EmbeddedResource]: Ressource die während dem Buildvorgang in die Verzeichnisstruktur der jeweiligen Plattform integriert wird.
 
