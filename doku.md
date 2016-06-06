@@ -74,7 +74,7 @@ Table: Eingesetzte Software und APIs
 
 [^deployment]: Installieren einer kompilierten Applikation auf einem Zielsystem.
 
-# SOAP
+# SOAP als Datenquelle
 Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Services erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus beliebigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
 
 [^xmlFormat]: Extensible Markup Language Format, ist eine Auszeichnungssprache für den plattform- und implementationsunabhängigen Austausch von Daten zwischen Computersystemen [@XML].
@@ -288,7 +288,7 @@ Um einen Request an den SOAP Service im XML-Format senden zu können, wird ein a
 ## Plattformspezifisches Verhalten via XAML Konfigurieren
 In manchen Fällen ist ein plattformspezifisches Verhalten der App unumgänglich. Ein Beispiel dafür ist das Top-Padding[^TopPadding] unter iOS. Wird das Top-Padding nicht gezielt eingestellt, werden die am oberen Rand angezeigten UI-Elemente teilweise von der Statusleiste des Betriebssystems verdeckt. Konkret bedeutet das, dass unter iOS UI-Elemente von z.B. der Uhrzeit- oder Empfangsanzeige verdeckt werden.
 
-Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeeinstellungen mit dem XAML-Tag <OnPlatform> zu festzulegen. Im folgenden Beispiel ist ein Padding für eine Seite vom Typ `ContentPage` festgelegt. Konfiguriert ist ein Top-Padding von 20px für iOS und ein Padding von 20px für alle Seiten auf Windows Phone 8.1.
+Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeeinstellungen mit dem XAML-Tag <OnPlatform> zu festzulegen. Im folgenden Beispiel ist ein Padding für eine Seite vom Typ `ContentPage` festgelegt. Konfiguriert ist ein Top-Padding von 20px für iOS und ein Padding von 20px für alle Seiten auf Windows Phone 8.1. Die Abbildung [OnPlatformPaddingIOS](#OnPlatformPaddingIOS) zeigt einen Vergleich mit (grün markiert) und ohne (rot markiert) Top-Padding in der CrewRest App.
 
 ```xml
 <ContentPage>
@@ -300,6 +300,8 @@ Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeein
   <!-- weitere UI-Elemente... -->
 </ContentPage>
 ```
+
+![OnPlatformPaddingIOS](img/on_platform_padding_ios.png)
 
 [^TopPadding]: Der Abstand von UI-Elementen vom oberen Bildrand.
 
