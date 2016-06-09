@@ -14,30 +14,32 @@ fontsize: 12pt
 # Erstellung einer Cross-Plattform Applikation
 Als Entwicklungsumgebung für die Entwicklung der Apps für Android, iOS und Windows 10 kommt Visual Studio 2015 zum Einsatz. Alternativ kann auch Xamarin Studio eingesetzt werden. Bei der Erstellung eines neuen Cross-Plattform-Projekts, wird zwischen einer *Blank App*[^BlankApp] *Xamarin.Forms Portable* und *Xamarin.Forms Shared* unterschieden.
 
-Im Falle der CrewRest[^CrewRest] Applikation wurde sich aufgrund von höherer Verbreitung von *Xamarin.Forms Portable (Portable Class Library (PCL))* Projekten im Internet, auch ebenfalls für diese Art von Projekt entschieden. Des Weiteren ist der Unterschied der beiden Projektarten nur marginal, denn in beiden Fällen ist es möglich einmal geschriebenen Code über die verschiedenen Plattformen hinweg zu nutzen.
+Im Falle der CrewRest[^CrewRest] Applikation wurde sich aufgrund von höherer Verbreitung von *Xamarin.Forms Portable (Portable Class Library (PCL))* Projekten im Internet, ebenfalls für diese Art von Projekt entschieden. Des Weiteren ist der Unterschied der beiden Projektarten nur marginal, denn in beiden Fällen ist es möglich einmal geschriebenen Code über die verschiedenen Plattformen hinweg zu nutzen.
 
 **Xamarin.Forms Portable (Portable Class Library (PCL))**
+
 Bei einem PCL Projekt, wird der gemeinsame Code in einer Bibliothek zusammengefasst, welche zur Laufzeit von der jeweiligen App referenziert und genutzt wird.
 
 **Xamarin.Forms Shared (Shared Asset Project (SAP))**
-Bei einem SAP Projekt, wird der gemeinsame Code jeweils während dem Buildvorgang der jeweiligen Plattform hinzugefügt, also auch speziell für die jeweilige Plattform kompiliert.
 
-[@MicrosoftXamarinBook S. 29-31]
+Bei einem SAP Projekt, wird der gemeinsame Code jeweils während dem Buildvorgang der jeweiligen Plattform hinzugefügt, also auch speziell für die jeweilige Plattform kompiliert [@MicrosoftXamarinBook S. 29-31].
 
 Eine tabellarische Gegenüberstellung von PCL und SAP Projekten, erstellt von Ken Ross, zeigt noch weitere Unterschiede der beiden Projektarten auf:
 
 |                                                                | PCL   | SAP  |
 |----------------------------------------------------------------|-------|------|
-| Komplettes .NET Framework nutzbar?                             | Nein  | Ja   |
+| komplettes .NET Framework nutzbar?                             | Nein  | Ja   |
 | #if-Syntax[^ifOS] für plattformspezifischen Code nutzbar?      | Nein  | Ja   |
-| plattformspezifischer Code benötigt IOC[^IOC]                  | Ja    | Nein |
+| plattformspezifischer Code benötigt IOC[^IOC]?                 | Ja    | Nein |
 
 Table: Unterschiede zwischen PCL und SAP Projekten
 [@PCLvsSAPTable]
 
+\newpage
+
 Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform teils unterschiedlich zugrundeliegenden .NET Klassen, z.B. unterscheiden sich die .NET Klassen für Windows 10 Apps teilweise von den .NET Klassen für iOS und Android. Das bedeutet, dass je nach gewünschten Zielplattformen eine eingeschränkte Version des .NET Frameworks genutzt wird. In manchen Fällen bedeutet das aber nicht, dass ein bestimmtes Feature gar nicht genutzt werden kann, gewisse Bibliotheken lassen sich z.B. in Form eines NuGet[^NuGet] Packages nachträglich installieren.
 
-Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Abschnitt [SOAP]) konsumiert. Im Falle eine Single-Plattform Applikation (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Mechanismus an, welcher aus  einer gegebenen URL unter der SOAP Services erreichbar sind, eine komplette Abbildung der Daten, welche die SOAP Services liefern zu generieren. Der Entwickler muss sich dann nicht mehr um das Parsen[^parsen] von SOAP Requests[^Request] und Responses[^Response] kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisierten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
+Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Abschnitt [SOAP als Datenquelle]) konsumiert. Im Falle einer Single-Plattform Applikation mit entsprechendem .NET Framework (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Mechanismus an, um SOAP Services in Klassen abzubilden. Dieser Mechanismus benötigt eine URL unter der SOAP Services erreichbar sind, um die Daten abbilden bzw. die Klassen generieren zu können, welche die SOAP Services liefern. Der Entwickler muss sich dann nicht mehr um das Parsen[^parsen] von SOAP Requests[^Request] und Responses[^Response] kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig, die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisierten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das Senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
 
 [^CrewRest]: Name der in diesem Praxisprojekt erstellten Applikation.
 [^Response]: Im Kontext dieser Dokumentation eine Antwort eines SOAP-Service.
@@ -56,7 +58,7 @@ Zum Entwickeln und Testen der zu erstellenden Cross-Plattform-Applikation ist fo
 | iPhone 5        | iOS                    | 9.3.1              | Testen der App auf iOS                 |
 | Asus Nexus 7    | Android                | 6.0 Marshmallow    | Testen der App auf Android             |
 | Virtual Machine | Win 10 Insider Preview | Build 1511         | Entwickeln & Testen der App auf Win 10 |
-| MacBook Pro     | OSX                    | 10.11.5 El Capitan | Kompilieren & deployen der App für iOS |
+| MacBook Pro     | OSX                    | 10.11.5 El Capitan | Kompilieren & Deployen der App für iOS |
 
 Table: Hardware und Betriebssysteme
 
@@ -75,7 +77,7 @@ Table: Eingesetzte Software und APIs
 [^deployment]: Installieren einer kompilierten Applikation auf einem Zielsystem.
 
 # SOAP als Datenquelle
-Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Services erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operationen ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus beliebigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
+Das benötigte Backend zur Erstellung der gewünschten Prototyp-App für die Luftfahrtgesellschaft ist in Form von SOAP[^soap] Services gegeben. Der Zugriff auf die Services erfolgt über das HTTP Protokoll. Diese SOAP Services bieten Operationen zum Austausch von Daten zwischen Anwendung und Datenbasis an. Jede dieser Operationen kann mit einem Request im XML-Format[^xmlFormat] über eine URL angesprochen werden. Dabei kann jede Operation ein oder mehrere optionale und nicht optionale Übergabeparameter fordern. Ist die gesendete Request syntaktisch und semantisch fehlerfrei, antwortet der SOAP Service mit einem Response (ebenfalls im XML-Format) welcher aus beliebigen Attributen bestehen kann. Ist der Request nicht fehlerfrei gewesen, sendet der genutzte SOAP Service entweder einen leeren Fault-Response[^faultResponse] zurück oder einen Fault-Respone mit Informationen, wenn ein semantischer Fehler vorliegt. Der Fault Response welcher durch semantische Fehler ausgelöst wurde, kann Informationen wie eine Fehlermeldung und/oder einen Fehlercode enthalten, falls dieser Fall im SOAP Service definiert ist.
 
 [^xmlFormat]: Extensible Markup Language Format, ist eine Auszeichnungssprache für den plattform- und implementationsunabhängigen Austausch von Daten zwischen Computersystemen [@XML].
 [^faultResponse]: XML-Format Respone vom SOAP Service, welcher einen fehler im Request signalisiert.
@@ -90,7 +92,7 @@ Um im Softwareprojekt einen gewissen Grad von Modularität zu gewährleisten und
     - Enthält C# Klassen mit Properties zum Abbilden von verwendeten Daten, welche aus den SOAP-Services erhalten werden. Nach dem Parsen der jeweiligen XML-Objekte, werden Instanzen der passenden Model-Klassen erzeugt.
 - **Views**
     - Enthält die in CrewRest benötigten XAML-Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegt.
-    - Bei der Erstellung einer neuen Page entstehen also immer zwei Dateien, zum Beispiel: `Page1.xaml` und `Page1.xaml.cs`
+    - Bei der Erstellung einer neuen Page entstehen also immer zwei Dateien, zum Beispiel: `Page1.xaml` und `Page1.xaml.cs`.
 
 All diese Verzeichnisse liegen (wie in Abbildung [ProjektmappenExplorer](#ProjektmappenExplorer) zu sehen) im *Shared Project* "CrewRest (Portable)" der Anwendung und werden von den einzelnen Plattformen genutzt.
 
@@ -141,11 +143,23 @@ helloBtn.Clicked += OnHelloBtnClicked(...);
 # Page Layouts
 Xamarin.Forms bietet mit der Subklasse `Layouts` (der Oberklasse `View`) folgende Layouts zum Darstellen von UI-Elementen. In den Layouts können wiederum UI-Elemente vom Typ `Views` wie z.B. Button, InputText oder ListView dargestellt werden oder auch weitere verschachtelte Layouts der Klasse `Layouts`.
 
-![XamarinFormsLayouts](img/xamarin_layouts.png "Xamarin.Forms Layouts") [@Layouts]
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{img/xamarin_layouts.png}
+    \caption{Xamarin.Forms Layouts}
+\end{figure}
+[@Layouts]
 
-Die in der Grafik [XamarinFormsLayouts](#XamarinFormsLayouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung [XamarinFormsPages](#XamarinFormsPages) dargestellten Anordnungsseiten der Klasse `Pages` [@MicrosoftXamarinBook S. 1020]:
+Die in der Grafik [Xamarin.Forms Layouts](#Xamarin.Forms Layouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung [Xamarin.Forms Pages](#Xamarin.Forms Pages) dargestellten Anordnungsseiten der Klasse `Pages` [@MicrosoftXamarinBook S. 1020]:
 
-![XamarinFormsPages](img/xamarin_pages.png "Xamarin.Forms Pages") [@Pages]
+\newpage
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1.0\textwidth]{img/xamarin_pages.png}
+    \caption{Xamarin.Forms Pages}
+\end{figure}
+[@Pages]
 
 Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Beziehung[^parentChild], bei welcher der folgende Grundsatz für die Anordnungsbeziehung gilt:
 "Children have requests, but parents lay down the law." [@MicrosoftXamarinBook S.  1055].
@@ -153,8 +167,6 @@ Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Bezieh
 Das in CrewRest am häufigsten verwendete Layout ist das StackLayout, in welchem sich über das Property "Orientation" die Ausrichtung festlegen lässt, "horizontal" oder "vertical". Die im StackLayout liegenden UI-Elemente werden darin entweder horizontal oder vertikal aneinandergereiht.
 
 Im folgenden Beispiel der CrewRest App lässt sich die hierarchische Anordnung von UI-Elementen erkennen. Dargestellt ist ein gekürzter Ausschnitt des XML-Codes der Seite `AntraegeUeberischt.xaml`, welche aus einer *MasterDetailPage* mit den einzelnen Abschnitten `<MasterDetailPage.Master>` und `<MasterDetailPage.Detail>` besteht. Die aus der XAML-Page resultierende Ansicht zur Laufzeit ist im Screenshot [Antraege Ueberischt unter Win 10](#AntraegeUeberischt) zu sehen.
-
-<!-- ![AntraegeUeberischt](img/antraege_uebersicht.png "Anträge Übersicht Page") -->
 
 \begin{figure}[h]
     \centering
@@ -213,28 +225,27 @@ Im folgenden Beispiel der CrewRest App lässt sich die hierarchische Anordnung v
 
 [^parentChild]: hierarchische Anordnung von UI-Elemten.
 
-# Funktionsweise des Deployen der App für die unterschiedlichen Plattformen
-
+# Deployen der App für die unterschiedlichen Plattformen
 Um die App auf den verschiedenen Plattformen zu installieren, sind je nach Betriebssystem andere Schritte, sowie unterschiedliche Hard- und Software nötig. Besonders unter iOS gestaltet sich der Deployment-Prozess auf ein echtes Gerät aufwendig, da ein Apple Developer Account angelegt und konfiguriert werden muss. Im Folgenden wird der Vorgang des Xamarin Frameworks um eine App vorzubereiten und zu deployen für die jeweilige Plattform genauer erklärt.  
 
 ## Android
 ![Android Deployment](img/android_deployment.pdf)
 
-Um aus einer Xamarin Cross-Plattform App eine Android Applikation zu bauen, wird der implementierte C#-Code in Common Intermediate Language[^IL] übersetzt. Anschließend wird mit Hilfe von Mono[^mono] ein Android Package gepackt, welches mit Hilfe von JIT'ing[^jit] ausgeführt werden kann. Während dieser Prozesse werden ungenutzte Klassen automatisch entfernt, um die App zu optimieren. [@Deployment]
+Um aus einer Xamarin Cross-Plattform-App eine Android Applikation zu bauen, wird der implementierte C#-Code in Common Intermediate Language[^IL] übersetzt. Anschließend wird mit Hilfe von Mono[^mono] ein Android Package gepackt, welches mit Hilfe von JIT'ing[^jit] ausgeführt werden kann. Während dieser Prozesse werden ungenutzte Klassen automatisch entfernt, um die App zu optimieren [@Deployment].
 
 Für die technische Umsetzung wird das Android Tablet im USB-Debug-Mode via USB mit dem Windows 10 verbunden wodurch ein direktes Deployment auf dem Gerät aus der Entwicklungsumgebung heraus möglich ist.
 
 ## iOS
 ![iOS Deployment](img/ios_deployment.pdf)
 
-Für das iOS Deployment wird der C#-Code mittels Ahead-of-time-Compiler[^aotc] in ARM Assembly Code übersetzt und anschließend zu einer iOS App gepackt. Auch hier wird während dem Kompiliervorgang dafür gesorgt, dass nicht benötigte Klassen entfernt werden, um die Größe der App zu reduzieren. [@Deployment]
+Für das iOS Deployment wird der C#-Code mittels Ahead-of-time-Compiler[^aotc] in ARM Assembly Code übersetzt und anschließend zu einer iOS App gepackt. Auch hier wird während dem Kompiliervorgang dafür gesorgt, dass nicht benötigte Klassen entfernt werden, um die Größe der App zu reduzieren [@Deployment].
 
 Für ein Deplyoment muss außerdem der Windows 10 PC via Remote Login mit dem Mac OSX Gerät mit installiertem XCode sowie Xamarin Studio verbunden sein.
 
 ## Windows 10
 ![Windows 10 Deployment](img/windows10_deployment.pdf)
 
-Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Intermediate Language übersetzt und in der .NET Laufzeitumgebung ausgeführt. [@Deployment]
+Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Intermediate Language übersetzt und in der .NET Laufzeitumgebung ausgeführt [@Deployment].
 
 [^jit]: Just-in-time-Kompilierung, Code wird zur Laufzeit in nativen Maschinencode übersetzt. [@JIT]
 [^mono]: Open Source Implementierung des .NET Frameworks. [@Mono]
@@ -634,6 +645,6 @@ In der anfänglichen Implementierung der MasterDetailPage trat ein Problem auf, 
 ## Einbindung einer Drittanbieter Kalender UI-Komponente
 Eine Anforderung an die CrewRest App ist das Anzeigen eines Kalenders in einer Montas- oder Wochenansicht mit speziell gekennzeichneten Tagen. Dieses Feature soll dem Anwender dabei helfen, die Abwesenheitslage von anderen Mitarbeitern überblicken zu können, um gezielt Urlaubsanträge in Zeiträumen mit geringer Anzahl anwesender Mitarbeiter zu verhindern.
 
-Zu diesem Zweck wird eine Drittanbieter-Komponente getestet, welche einen Kalender in Monatsansicht darstellt, da Xamarin.Forms keine solche Komponente bietet. Der Anbieter der genutzten Kalender-Komponente ist das Open Source Projekt [Xamarin Froms Labs](https://github.com/XLabs/Xamarin-Forms-Labs), welches auf GitHub gehostet ist. Um die Features von Xamarin Forms Labs in CrewRest verfügbar zu machen, ist das Projekt über NuGet dem CrewRest Projekt hinzugefügt. Des Weiteren sind einige Konfigurationsschritte nötig, um die zusätzlichen Features nutzbar zu machen, welche sehr knapp durch die Dokumentation des open source Projekts beschrieben werden. Nach einigen Versuchen, die Kalender-Komponente von Xamarin Forms Labs zu nutzen, bleibt die Frage ob es für die gegebenen Anforderungen nutzbar ist noch offen. Der jetzige Stand von CrewRest zeigt die Kalender-Komponente unter iOS und Android an, unter Windows 10 jedoch wird diese nicht gerendert.
+Zu diesem Zweck wird eine Drittanbieter-Komponente getestet, welche einen Kalender in Monatsansicht darstellt, da Xamarin.Forms keine solche Komponente bietet. Der Anbieter der genutzten Kalender-Komponente ist das Open Source Projekt [Xamarin Froms Labs](https://github.com/XLabs/Xamarin-Forms-Labs), welches auf GitHub gehostet ist. Um die Features von Xamarin.Forms Labs in CrewRest verfügbar zu machen, ist das Projekt über NuGet dem CrewRest Projekt hinzugefügt. Des Weiteren sind einige Konfigurationsschritte nötig, um die zusätzlichen Features nutzbar zu machen, welche sehr knapp durch die Dokumentation des open source Projekts beschrieben werden. Nach einigen Versuchen, die Kalender-Komponente von Xamarin.Forms Labs zu nutzen, bleibt die Frage ob es für die gegebenen Anforderungen nutzbar ist noch offen. Der jetzige Stand von CrewRest zeigt die Kalender-Komponente unter iOS und Android an, unter Windows 10 jedoch wird diese nicht gerendert.
 
 # Literatur und Internetquellen
