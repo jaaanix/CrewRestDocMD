@@ -9,6 +9,7 @@ mainfont: Charis SIL
 #mainfontoptions: ItalicFont=Gentium Basic Italic
 #mainfontoptions: BoldItalicFont=Gentium Basic Bold Italic
 fontsize: 12pt
+numbersections: true
 ---
 
 # Erstellung einer Cross-Plattform Applikation
@@ -151,7 +152,7 @@ Xamarin.Forms bietet mit der Subklasse `Layouts` (der Oberklasse `View`) folgend
 \end{figure}
 [@Layouts]
 
-Die in der Grafik [Xamarin.Forms Layouts](#Xamarin.Forms Layouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung "[Xamarin.Forms Pages](#Xamarin.Forms Pages)" dargestellten Anordnungsseiten der Klasse `Pages`[^4]:
+Die in der Grafik [Xamarin.Forms Layouts](#Xamarin.Forms Layouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung "[Xamarin.Forms Pages](#Xamarin.Forms Pages)"[@Pages] dargestellten Anordnungsseiten der Klasse `Pages`[^4]:
 
 \newpage
 
@@ -160,7 +161,6 @@ Die in der Grafik [Xamarin.Forms Layouts](#Xamarin.Forms Layouts) abgebildeten L
     \includegraphics[width=1.0\textwidth]{img/xamarin_pages.png}
     \caption{Xamarin.Forms Pages}
 \end{figure}
-[@Pages]
 
 Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Beziehung[^parentChild], bei welcher der folgende Grundsatz für die Anordnungsbeziehung gilt:
 "Children have requests, but parents lay down the law."[^5].
@@ -245,10 +245,12 @@ Für das iOS Deployment wird der C#-Code mittels Ahead-of-time-Compiler[^aotc] i
 
 Für ein Deplyoment muss außerdem der Windows 10 PC via Remote Login mit dem Mac OSX Gerät mit installiertem XCode sowie Xamarin Studio verbunden sein.
 
+\newpage
+
 ## Windows 10
 ![Windows 10 Deployment](img/windows10_deployment.pdf)
 
-Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Intermediate Language übersetzt und in der .NET Laufzeitumgebung ausgeführt [@Deployment].
+Für das Bereitstellen der App auf Windows 10, wird der C#-Code in Common Intermediate Language übersetzt und in der .NET Laufzeitumgebung ausgeführt [@Deployment]. Windows 10 kann in diesem Fall kombiniert mit C# auch als native Plattform angesehen werden.
 
 [^jit]: Just-in-time-Kompilierung, Code wird zur Laufzeit in nativen Maschinencode übersetzt. [@JIT]
 [^mono]: Open Source Implementierung des .NET Frameworks. [@Mono]
@@ -573,10 +575,8 @@ Behaviors unterscheiden sich von Triggern durch ihre erweiterte Funktionalität.
 ### Trigger in CrewRest
 In CrewRest ist ein DataTrigger angelegt, um beim Hinzufügen von Urlaubsanträgen nur dann das Speichern via *Speichern*-Button zu erlauben, wenn alle Pflichtfelder ausgefüllt sind. Dazu hat der im Button integrierte DataTrigger eine Referenz auf die Textlänge eines Eingabefelds (in diesem Fall auf das Kommentarfeld) und ein Property `Value` mit dem Wert 0. Außerdem einen Setter, welcher die Aktion festlegt wenn der definierte Fall (Textlänge = 0) eintritt. Der `Setter` bewirkt also das Setzen der Eigenschaft `IsEnabled` des Button auf `False` wenn das Eingabefeld für *Kommentar* leer ist.
 
-```{caption="CrewRest DataTrigger" .xml}
-<!-- ... -->
+```{caption="CrewRest DataTrigger (Ausschnitt)" .xml}
 <EntryCell x:Name="kommentarExtEC" Label="Kommentar" />
-<!-- ... -->
 <Button Text="Speichern" Clicked="OnSpeichernBtnClicked">
   <Button.Triggers>
     <DataTrigger TargetType="Button"
@@ -587,7 +587,6 @@ In CrewRest ist ein DataTrigger angelegt, um beim Hinzufügen von Urlaubsanträg
     </DataTrigger>
   </Button.Triggers>
 </Button>
-<!-- ... -->
 ```
 
 ### Behavior in CrewRest
@@ -637,6 +636,8 @@ Damit das plattformübergreifende Verwenden von Bilder funktioniert und die Bild
 
 [^9]: Vgl. [@MicrosoftXamarinBook], S. 289.
 [^EmbeddedResource]: Ressource die während dem Buildvorgang in die Verzeichnisstruktur der jeweiligen Plattform integriert wird.
+
+\newpage
 
 ## Einschränkungen und Probleme bei der Cross-Plattform Entwicklung
 Während der Entwicklung von CrewRest traten verschieden Probleme auf, welche den Implementierungsprozess erschwert und/oder verlangsamt haben.
