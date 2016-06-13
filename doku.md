@@ -3,7 +3,7 @@ toc: true
 lang: de-DE
 documentclass: scrreprt
 bibliography: literatur.bib
-csl: din-1505-2-numeric-alphabetical.csl
+csl: tgm-wien-diplom.csl
 mainfont: Charis SIL
 #mainfontoptions: BoldFont=Gentium Basic Bold
 #mainfontoptions: ItalicFont=Gentium Basic Italic
@@ -22,9 +22,9 @@ Bei einem PCL Projekt, wird der gemeinsame Code in einer Bibliothek zusammengefa
 
 **Xamarin.Forms Shared (Shared Asset Project (SAP))**
 
-Bei einem SAP Projekt, wird der gemeinsame Code jeweils während dem Buildvorgang der jeweiligen Plattform hinzugefügt, also auch speziell für die jeweilige Plattform kompiliert [@MicrosoftXamarinBook S. 29-31].
+Bei einem SAP Projekt, wird der gemeinsame Code jeweils während dem Buildvorgang der jeweiligen Plattform hinzugefügt, also auch speziell für die jeweilige Plattform kompiliert[^1].
 
-Eine tabellarische Gegenüberstellung von PCL und SAP Projekten, erstellt von Ken Ross, zeigt noch weitere Unterschiede der beiden Projektarten auf:
+Eine tabellarische Gegenüberstellung von PCL und SAP Projekten, erstellt von Ken Ross, zeigt noch weitere Unterschiede der beiden Projektarten auf[^2]:
 
 |                                                                | PCL   | SAP  |
 |----------------------------------------------------------------|-------|------|
@@ -33,7 +33,6 @@ Eine tabellarische Gegenüberstellung von PCL und SAP Projekten, erstellt von Ke
 | plattformspezifischer Code benötigt IOC[^IOC]?                 | Ja    | Nein |
 
 Table: Unterschiede zwischen PCL und SAP Projekten
-[@PCLvsSAPTable]
 
 \newpage
 
@@ -41,6 +40,8 @@ Ein mögliches Problem bei einem PCL Projekt sind die von Plattform zu Plattform
 
 Die Nutzung eines eingeschränkten .NET Frameworks erschwert die Umsetzung der Cross-Plattform Applikation "CrewRest", welche einen SOAP Service (siehe Abschnitt [SOAP als Datenquelle]) konsumiert. Im Falle einer Single-Plattform Applikation mit entsprechendem .NET Framework (ggf. auch mehr als eine Zielplattform) bietet die IDE Visual Studio 2015 einen Mechanismus an, um SOAP Services in Klassen abzubilden. Dieser Mechanismus benötigt eine URL unter der SOAP Services erreichbar sind, um die Daten abbilden bzw. die Klassen generieren zu können, welche die SOAP Services liefern. Der Entwickler muss sich dann nicht mehr um das Parsen[^parsen] von SOAP Requests[^Request] und Responses[^Response] kümmern. Bei der Cross-Plattform Applikation CrewRest ist dies jedoch nicht möglich, da nicht gewährleistet werden kann, dass zur Laufzeit alle benötigten .NET Funktionalitäten auf jeder Plattform zu Verfügung stehen. Aus diesem Grund ist es nötig, die benötigten Klassen zur Abbildung der genutzten Daten selbst zu erstellen und aus einem erhaltenen deserialisierten XML-Objekt zur Laufzeit eine Instanz der passenden Klasse zu erstellen. Das gleiche gilt für das Senden von Requests an einen SOAP Serivce, für welchen erst ein Objekt zu XML serialisiert werden muss.
 
+[^1]: Vgl. [@MicrosoftXamarinBook], S. 29-31.
+[^2]: Vgl. [@PCLvsSAPTable]
 [^CrewRest]: Name der in diesem Praxisprojekt erstellten Applikation.
 [^Response]: Im Kontext dieser Dokumentation eine Antwort eines SOAP-Service.
 [^Request]: Im Kontext dieser Dokumentation eine Anfrage an einen SOAP-Service.
@@ -94,7 +95,7 @@ Um im Softwareprojekt einen gewissen Grad von Modularität zu gewährleisten und
     - Enthält die in CrewRest benötigten XAML-Pages und deren C# Code-Behind Klassen[^codeBehind] in denen die Logik der jeweiligen Page liegt.
     - Bei der Erstellung einer neuen Page entstehen also immer zwei Dateien, zum Beispiel: `Page1.xaml` und `Page1.xaml.cs`.
 
-All diese Verzeichnisse liegen (wie in Abbildung [ProjektmappenExplorer](#ProjektmappenExplorer) zu sehen) im *Shared Project* "CrewRest (Portable)" der Anwendung und werden von den einzelnen Plattformen genutzt.
+All diese Verzeichnisse liegen (wie in Abbildung "[ProjektmappenExplorer](#ProjektmappenExplorer)"" zu sehen) im *Shared Project* "CrewRest (Portable)" der Anwendung und werden von den einzelnen Plattformen genutzt.
 
 \begin{figure}[h]
     \centering
@@ -105,7 +106,7 @@ All diese Verzeichnisse liegen (wie in Abbildung [ProjektmappenExplorer](#Projek
 [^codeBehind]: Einer XAML Page zugehörige C# Klasse um dessen Logik zu implementieren.
 
 # XAML vs. Code
-Xamarin.Forms erlaubt das Entwerfen von Oberflächen auf zwei unterschiedliche Arten, entweder die Pages werden via XML auf einer XAML-Page deklarativ angelegt oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum Designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll [@MicrosoftXamarinBook, S. 131]. Für die Entwicklung von CrewRest kommt so oft wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
+Xamarin.Forms erlaubt das Entwerfen von Oberflächen auf zwei unterschiedliche Arten, entweder die Pages werden via XML auf einer XAML-Page deklarativ angelegt oder aber sie werden in C# erzeugt. Beide Fälle bieten die Möglichkeit jegliche vorhandenen UI-Elemente zu nutzen. XAML nutzt die Auszeichnungssprache XML als Syntax. XAML ist noch vor C# von Microsoft entwickelt worden und kommt schon seit dem Einsatz von Windows Presentation Foundation[^wpf] (WPF) zum Einsatz. Es erlaubt Entwicklern ein Set von UI-Elementen deklarativ, statt programmatisch zu erzeugen. Welche UI-Elemente genutzt werden können, hängt in beiden Fällen immer vom eingesetzten Framework ab. Durch die hierarchische Form von XML in XAML, ist es besonders bei komplexen Layouts einfacher das bereits Umgesetzte zu überblicken und zu warten. Grundsätzlich lässt sich durch den Einsatz von XAML zum Designen von Pages und C# zur Implementierung der Logik eine klare Trennung zwischen Oberfläche und Anwendungsverhalten schaffen, jedoch ist eine strikte Trennung nicht immer sinnvoll[^3]. Für die Entwicklung von CrewRest kommt so oft wie Möglich XAML für Designaufgaben zum Einsatz. Des Weiteren lässt sich auch eine gewisse Logik in XAML leichter definieren, z.B. ein DataTrigger kann so leichter erstellt werden (siehe Abschnitt [Trigger in CrewRest]).
 
 \newpage
 
@@ -137,7 +138,7 @@ Button helloBtn = new Button() {
     HorizontalOptions = LayoutOptions.CenterAndExpand };
 helloBtn.Clicked += OnHelloBtnClicked(...);
 ```
-
+[^3]: Vgl. [@MicrosoftXamarinBook], S. 131.
 [^wpf]: Ein von Microsoft angebotenes GUI Framework auf Basis von .NET [@WPF].
 
 # Page Layouts
@@ -150,7 +151,7 @@ Xamarin.Forms bietet mit der Subklasse `Layouts` (der Oberklasse `View`) folgend
 \end{figure}
 [@Layouts]
 
-Die in der Grafik [Xamarin.Forms Layouts](#Xamarin.Forms Layouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung [Xamarin.Forms Pages](#Xamarin.Forms Pages) dargestellten Anordnungsseiten der Klasse `Pages` [@MicrosoftXamarinBook S. 1020]:
+Die in der Grafik [Xamarin.Forms Layouts](#Xamarin.Forms Layouts) abgebildeten Layouts unterliegen wiederum einem der in der folgenden Abbildung "[Xamarin.Forms Pages](#Xamarin.Forms Pages)" dargestellten Anordnungsseiten der Klasse `Pages`[^4]:
 
 \newpage
 
@@ -162,7 +163,7 @@ Die in der Grafik [Xamarin.Forms Layouts](#Xamarin.Forms Layouts) abgebildeten L
 [@Pages]
 
 Die verschiedenen UI-Elemente und Layouts haben jeweils eine Parent-Child-Beziehung[^parentChild], bei welcher der folgende Grundsatz für die Anordnungsbeziehung gilt:
-"Children have requests, but parents lay down the law." [@MicrosoftXamarinBook S.  1055].
+"Children have requests, but parents lay down the law."[^5].
 
 Das in CrewRest am häufigsten verwendete Layout ist das StackLayout, in welchem sich über das Property "Orientation" die Ausrichtung festlegen lässt, "horizontal" oder "vertical". Die im StackLayout liegenden UI-Elemente werden darin entweder horizontal oder vertikal aneinandergereiht.
 
@@ -223,6 +224,8 @@ Im folgenden Beispiel der CrewRest App lässt sich die hierarchische Anordnung v
 ```
 \newpage
 
+[^4]: Vgl. [@MicrosoftXamarinBook], S. 1020.
+[^5]: [@MicrosoftXamarinBook], S. 1055.
 [^parentChild]: hierarchische Anordnung von UI-Elemten.
 
 # Deployen der App für die unterschiedlichen Plattformen
@@ -313,7 +316,7 @@ Um einen Request an den SOAP Service im XML-Format senden zu können, wird ein a
 ## Plattformspezifisches Verhalten via XAML Konfigurieren
 In manchen Fällen ist ein plattformspezifisches Verhalten der App unumgänglich. Ein Beispiel dafür ist das Top-Padding[^TopPadding] unter iOS. Wird das Top-Padding nicht gezielt eingestellt, werden die am oberen Rand angezeigten UI-Elemente teilweise von der Statusleiste des Betriebssystems verdeckt. Konkret bedeutet das, dass unter iOS UI-Elemente von z.B. der Uhrzeit- oder Empfangsanzeige verdeckt werden.
 
-Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeeinstellungen mit dem XAML-Tag <OnPlatform> festzulegen. Im folgenden Beispiel ist ein Padding für eine Seite vom Typ `ContentPage` festgelegt. Konfiguriert ist ein Top-Padding von 20px für iOS und ein Padding von 20px für alle Seiten auf Windows Phone 8.1. Die Abbildung [On Platform Padding auf iOS](#On Platform Padding iOS) zeigt einen Vergleich mit (grün markiert) und ohne (rot markiert) Top-Padding in der CrewRest App.
+Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeeinstellungen mit dem XAML-Tag <OnPlatform> festzulegen. Im folgenden Beispiel ist ein Padding für eine Seite vom Typ `ContentPage` festgelegt. Konfiguriert ist ein Top-Padding von 20px für iOS und ein Padding von 20px für alle Seiten auf Windows Phone 8.1. Die Abbildung "[On Platform Padding auf iOS](#On Platform Padding iOS)" zeigt einen Vergleich mit (grün markiert) und ohne (rot markiert) Top-Padding in der CrewRest App.
 
 **Plattformspezifisches Padding in XML**
 ```xml
@@ -416,7 +419,9 @@ public string MeinText
 }
 ```
 
-Ist das Binding einer UI-Komponente wie der ListView in CrewRest an eine Collection vom Typ `ObservableCollection<T>` gebunden, ist es nicht nötig das Updaten der angezeigten Daten durch Getter und Setter zu forcieren. Die Klasse `ObservableCollection<T>` implementiert das Interface `INotifyCollectionChanged`. Ist dieses Interface implementiert, feuert die Collection bei jedem Hinzufügen oder Entfernen von Items (Einträgen) der Collection ein `CollectionChanged` Event. Die ListView in Xamarin ist so implementiert, dass sie sich im Falle eines `CollectionChanged` Events automatisch aktualisiert [@MicrosoftXamarinBook, S.551-552].
+Ist das Binding einer UI-Komponente wie der ListView in CrewRest an eine Collection vom Typ `ObservableCollection<T>` gebunden, ist es nicht nötig das Updaten der angezeigten Daten durch Getter und Setter zu forcieren. Die Klasse `ObservableCollection<T>` implementiert das Interface `INotifyCollectionChanged`. Ist dieses Interface implementiert, feuert die Collection bei jedem Hinzufügen oder Entfernen von Items (Einträgen) der Collection ein `CollectionChanged` Event. Die ListView in Xamarin ist so implementiert, dass sie sich im Falle eines `CollectionChanged` Events automatisch aktualisiert[^6].
+
+[^6]: Vgl. [@MicrosoftXamarinBook], S.551-552.
 
 ## Filtern der Urlaubsanträge Liste
 Die Urlaubsanträge Liste zeigt dem User standardmäßig alle Urlaubsanträge eines bestimmten Jahres. Des Weiteren bietet die App die Möglichkeit die angezeigten Urlaubsanträge nach Monat (1-12) und Status (*beantragt, geloescht, genehmigt, abgelehnt*) zu filtern. Die Ausgewählten Werte der drei Filter werden mit einer AND-Beziehung kombiniert.
@@ -546,21 +551,24 @@ private void VariabelSwitchCell_OnChanged(object sender, ToggledEventArgs e)
 [^Page]: Die Ansicht einer Seite in der CrewRest App.
 
 ## Dynamisches UI Verhalten und Validierung von Eingaben
-In CrewRest werden "Trigger" und "Behavior" zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Mechanismus ist das Aktivieren und Deaktivieren von Buttons oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
+In CrewRest werden "Trigger" und "Behavior" zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird[^7]. Ein häufiger Anwendungsfall für einen solchen Mechanismus ist das Aktivieren und Deaktivieren von Buttons oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
 
 \newpage
 
 - Trigger
-    - zum Setzen von Properties bei Änderung eines anderen Property [@MicrosoftXamarinBook, S. 836]
+    - zum Setzen von Properties bei Änderung eines anderen Property[^7]
 - EventTrigger
-    - zum Ausführen von Code in Abhängigkeit von einem Event [@MicrosoftXamarinBook, S. 836]
+    - zum Ausführen von Code in Abhängigkeit von einem Event[^7]
 - DataTrigger
-    - zum Setzen von Properties bei Änderung eines gebundenen Property (DataBinding)
-    - *unterscheidet sich von den anderen Trigger Arten, da hier ein Property eines anderen Objektes "überwacht" wird* [@MicrosoftXamarinBook, S. 853]
+    - zum Setzen von Properties bei Änderung eines gebundenen Property (DataBinding)[^7]
+    - *unterscheidet sich von den anderen Trigger Arten, da hier ein Property eines anderen Objektes "überwacht" wird*[^8]
 - MultiTrigger
-    - zum Setzen von Properties bei Änderung einer Menge von anderen Properties [@MicrosoftXamarinBook, S. 836]
+    - zum Setzen von Properties bei Änderung einer Menge von anderen Properties[^7]
 
 Behaviors unterscheiden sich von Triggern durch ihre erweiterte Funktionalität. Ein Behavior kann alles was auch ein Trigger kann. Ein Behavior benötigt im Gegensatz zu Triggern aber immer eine programmatische Implementierung in C#. Ist die Umsetzung eines dynamischen UI Verhaltens oder einer Restriktion also mit einem Trigger möglich, wird empfohlen auch einen Trigger statt eines Behaviors zu nutzen [@MicrosoftXamarinBook, S. 868].
+
+[^7]: Vgl. [@MicrosoftXamarinBook], S. 835 - 836.
+[^8]: Vgl. [@MicrosoftXamarinBook], S. 853.
 
 ### Trigger in CrewRest
 In CrewRest ist ein DataTrigger angelegt, um beim Hinzufügen von Urlaubsanträgen nur dann das Speichern via *Speichern*-Button zu erlauben, wenn alle Pflichtfelder ausgefüllt sind. Dazu hat der im Button integrierte DataTrigger eine Referenz auf die Textlänge eines Eingabefelds (in diesem Fall auf das Kommentarfeld) und ein Property `Value` mit dem Wert 0. Außerdem einen Setter, welcher die Aktion festlegt wenn der definierte Fall (Textlänge = 0) eintritt. Der `Setter` bewirkt also das Setzen der Eigenschaft `IsEnabled` des Button auf `False` wenn das Eingabefeld für *Kommentar* leer ist.
@@ -609,7 +617,7 @@ void HandleDateChanged(object sender, DateChangedEventArgs e)
         }
 ```
 
-[^BindableObject]: Objekt welches die Zuweisung eines Data Bindings ermöglicht (z.B. eine Xamarin UI-Komponente) [@MicrosoftXamarinBook, S. 234].
+[^BindableObject]: Objekt welches die Zuweisung eines Data Bindings ermöglicht (z.B. eine Xamarin UI-Komponente) [@MicrosoftXamarinBook], S. 234.
 
 ## Hinzufügen von EmbeddedResources zum Anzeigen von Bildern
 Um in einer Xamarin App ein Bild anzuzeigen wird die `Image` Komponente genutzt. Diese Komponente besitzt die Property `Source`, welcher ein Objekt vom Typ `ImageSource` zugewisen wird, um die Quelle des anzuzeigendes Bildes festzulegen. Eine Bild kann aus verschiedene Quellen eingebunden werden, dazu bietet die Klasse `ImageSource` vier unterschiedliche statische Methoden an [@MicrosoftXamarinBook, S. 283]:
@@ -625,8 +633,9 @@ Um in einer Xamarin App ein Bild anzuzeigen wird die `Image` Komponente genutzt.
 
 In CrewRest werden Bilderquellen über die Methode `FromResource` festgelegt. Durch diese Vorgehensweise ist es möglich, die benötigten Bilder in der PCL abzulegen, was dazu führt, dass die Bilder während dem Buildvorgang an die benötigte Stelle in der Verzeichnisstruktur der jeweiligen App abgelegt werden und somit zugreifbar sind. Würde stattdessen die Methode `FromFile` genutzt, wäre es nötig, die benötigten Bilder redundant in den jeweiligen Projekten für die Plattformen abzulegen. Die beiden Methoden haben ihre Vor- und Nachteile. Ist es beispielsweise gewünscht auf jeder Plattform unterschiedliche Bilder anzuzeigen, macht es mehr Sinn die Methode `FromFile` zu nutzen und die entsprechenden Bilder in den jeweiligen Projekten für die Plattformen abzulegen.
 
-Damit das plattformübergreifende Verwenden von Bilder funktioniert und die Bilder während dem Buildvorgang für die jeweilige Plattform integriert werden, müssen alle Bilder via Visual Studio 2015 als "Eingebettete Ressource" angegeben werden. Des Weiteren muss in der Code-Behind Datei der Page auf der ein Bild angezeigt werden soll, ein Property vom Typ `ImageSource` angelegt werden [@MicrosoftXamarinBook, S. 289].
+Damit das plattformübergreifende Verwenden von Bilder funktioniert und die Bilder während dem Buildvorgang für die jeweilige Plattform integriert werden, müssen alle Bilder via Visual Studio 2015 als "Eingebettete Ressource" angegeben werden. Des Weiteren muss in der Code-Behind Datei der Page auf der ein Bild angezeigt werden soll, ein Property vom Typ `ImageSource` angelegt werden[^9].
 
+[^9]: Vgl. [@MicrosoftXamarinBook], S. 289.
 [^EmbeddedResource]: Ressource die während dem Buildvorgang in die Verzeichnisstruktur der jeweiligen Plattform integriert wird.
 
 ## Einschränkungen und Probleme bei der Cross-Plattform Entwicklung
