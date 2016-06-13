@@ -258,7 +258,7 @@ In den folgenden Abschnitten wird der Zweck der implementierten Komponenten erkl
 ## SOAP Zugriff - XML Parsing - (De)serialisieren
 Der Zugriff auf SOAP Services ist für die Anzeige und Erstellung von Daten in  der App CrewRest nötig. Um den Zugriff zu realisieren, wird die Klasse `System.Net.Http.HttpClient` genutzt. Diese Klasse ermöglicht den Datenaustausch zwischen App und Diensten auf Basis des HTTP Protokolls zu nutzen.
 
-Um speziell einen SOAP Service zu konsumieren, werden einer Instanz der Klasse `HttpClient` Request Header Informationen bestehend aus *Name* und *SOAP Operationname* zugewiesen. Anschließend wird asynchron eine HTTP Methode vom Typ POST mit URL und einem `string` im vom Service erwarteten XML-Format an den SOAP Service gesendet (der Request) um einen SOAP Response zu erhalten.
+Um speziell einen SOAP Service zu konsumieren, werden einer Instanz der Klasse `HttpClient` Request Header Informationen bestehend aus *Name* und *SOAP Operationname* zugewiesen. Anschließend wird asynchron eine HTTP Methode vom Typ POST mit URL und einem `string` im vom Service erwarteten XML-Format an den SOAP Service gesendet (der Request), um einen SOAP Response zu erhalten.
 
 **SOAP Http Client Zugriff in C#**
 ```{#SOAPHttpClientZugriff .cs .numberLines startFrom="1"}
@@ -273,7 +273,7 @@ var response = await client.PostAsync(uri, content);
 
 Der erhaltene Response wird anschließend auf seinen Status überprüft, um zu entscheiden ob ein Fault Response oder der erwartete Response mit den gewünschten Daten vorliegt. Je nach Response Typ muss dieser dann entsprechend geparsed und anschließend deserialisiert werden. Dazu werden .NET Framework Klassen `XDocument`, `XNamespace` und `XmlSerializer` genutzt.
 
-Aus dem erhaltenen Response vom Typ `string` wird mit Hilfe der statischen Methode `Parse` der Klasse `XDocument` ein automatisches parsing durchgeführt. Anschließend werden die vom SOAP Service definierten Namespaces abgefragt und gespeichert. Nun kann der eigentliche Inhalt, also die gewünschten Informationen aus dem Response gefiltert werden, da die SOAP Serivce Metadaten mit Hilfe der zuvor abgefragten Namespaces lokalisiert und entfernt werden können. Aus dem erhaltenen, gefilterten `string` wird schließlich ein durch deserialisieren ein Objekt der passenden Klassen erzeugt.
+Aus dem erhaltenen Response vom Typ `string` wird mit Hilfe der statischen Methode `Parse` der Klasse `XDocument` ein automatisches Parsing durchgeführt. Anschließend werden die vom SOAP Service definierten Namespaces abgefragt und gespeichert. Nun kann der eigentliche Inhalt, also die gewünschten Informationen aus dem Response gefiltert werden, da die SOAP Serivce Metadaten mit Hilfe der zuvor abgefragten Namespaces lokalisiert und entfernt werden können. Aus dem erhaltenen, gefilterten `string` wird schließlich ein durch deserialisieren passendes Objekt der entsprechenden Klasse erzeugt.
 
 **SOAP Response Parsing in C#**
 ```{#SoapResponseParsing .cs .numberLines startFrom="1"}
@@ -313,7 +313,7 @@ Um einen Request an den SOAP Service im XML-Format senden zu können, wird ein a
 ## Plattformspezifisches Verhalten via XAML Konfigurieren
 In manchen Fällen ist ein plattformspezifisches Verhalten der App unumgänglich. Ein Beispiel dafür ist das Top-Padding[^TopPadding] unter iOS. Wird das Top-Padding nicht gezielt eingestellt, werden die am oberen Rand angezeigten UI-Elemente teilweise von der Statusleiste des Betriebssystems verdeckt. Konkret bedeutet das, dass unter iOS UI-Elemente von z.B. der Uhrzeit- oder Empfangsanzeige verdeckt werden.
 
-Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeeinstellungen mit dem XAML-Tag <OnPlatform> zu festzulegen. Im folgenden Beispiel ist ein Padding für eine Seite vom Typ `ContentPage` festgelegt. Konfiguriert ist ein Top-Padding von 20px für iOS und ein Padding von 20px für alle Seiten auf Windows Phone 8.1. Die Abbildung [On Platform Padding auf iOS](#On Platform Padding iOS) zeigt einen Vergleich mit (grün markiert) und ohne (rot markiert) Top-Padding in der CrewRest App.
+Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeeinstellungen mit dem XAML-Tag <OnPlatform> festzulegen. Im folgenden Beispiel ist ein Padding für eine Seite vom Typ `ContentPage` festgelegt. Konfiguriert ist ein Top-Padding von 20px für iOS und ein Padding von 20px für alle Seiten auf Windows Phone 8.1. Die Abbildung [On Platform Padding auf iOS](#On Platform Padding iOS) zeigt einen Vergleich mit (grün markiert) und ohne (rot markiert) Top-Padding in der CrewRest App.
 
 **Plattformspezifisches Padding in XML**
 ```xml
@@ -334,7 +334,7 @@ Xamarin bietet eine einfache Möglichkeit solche plattformabhängigen Anzeigeein
 \newpage
 
 ## Data Bindings
-Ein Data Binding stellt in Xamarin eine Beziehungen zwischen Properties von zwei Objekten dar, was in den meisten Fällen die Beziehungen zwischen einer UI-Komponente (z.B. ein TextLabel) und Daten-Objekten definiert. Dieser Mechanismus bewirkt, dass ein Objekt durch ein Event eine Änderung des verbundenen Objekts erfährt. Es wird hier von der Verbindung zwischen Properties von zwei Objekten gesprochen, weil auch eine UI-Komponente, die auf einer XAML-Page angelegt wird zur Laufzeit der App ein Objekt ist [@DataBindings].
+Ein Data Binding stellt in Xamarin eine Beziehung zwischen Properties von zwei Objekten dar, was in den meisten Fällen die Beziehung zwischen einer UI-Komponente (z.B. ein TextLabel) und Daten-Objekten definiert. Dieser Mechanismus bewirkt, dass ein Objekt durch ein Event eine Änderung des verbundenen Objekts erfährt. Es wird hier von der Verbindung zwischen Properties von zwei Objekten gesprochen, weil auch eine UI-Komponente, die auf einer XAML-Page angelegt wird zur Laufzeit der App ein Objekt ist [@DataBindings].
 
 Ein gutes Beispiel für ein sogenanntes View-to-View Binding[^ViewToView] liefert der Xamarin Online Guide. Im diesem Beispiel handelt es sich um zwei UI-Elemente (ein Label und ein Schieberegler) welche teilweise voneinander abhängige Eigenschaften (Properties) besitzen. Die Eigenschaft `Rotation` des Labels ist an die Eigenschaft `Value` des Sliders gebunden. Wird nun der Wert der Sliders durch den Benutzer geändert, dreht sich das Label entsprechend. Wichtig ist ebenfalls das Festlegen der Eigenschaft `BindingContext` mit dem Wert `x:Reference...` was einen Verweis auf die Instanz der angezeigten Page darstellt und auf die Eigenschaft `x:Name` des Sliders verweist.
 
@@ -396,7 +396,7 @@ Durch diese Zuweisung ist es wiederum möglich direkt auf der XAML-Page auf die 
 \newpage
 
 ### Aktualisieren von Daten im User Interface
-Um eine UI-Komponente zu aktualisieren wenn ihr Wert an ein Property im Code-Behind gebunden ist, ist es nötig das Getter und Setter für das gebundene Property implementiert sind.
+Um eine UI-Komponente zu aktualisieren wenn ihr Wert an ein Property im Code-Behind gebunden ist, ist es nötig, dass die Getter und Setter-Methoden für das gebundene Property implementiert sind.
 
 **UI Update in C#**
 ```{#UpdateUIData .cs .numberLines startFrom="1"}
@@ -422,12 +422,12 @@ Ist das Binding einer UI-Komponente wie der ListView in CrewRest an eine Collect
 Die Urlaubsanträge Liste zeigt dem User standardmäßig alle Urlaubsanträge eines bestimmten Jahres. Des Weiteren bietet die App die Möglichkeit die angezeigten Urlaubsanträge nach Monat (1-12) und Status (*beantragt, geloescht, genehmigt, abgelehnt*) zu filtern. Die Ausgewählten Werte der drei Filter werden mit einer AND-Beziehung kombiniert.
 
 ### Das Filtern nach Jahren
-Um die Urlaubsanträge eines bestimmten Jahres in CrewRest anzuzeigen, werden im Gegensatz zu den Filtern für Monat und Status keine vorhandenen Daten gefiltert, sondern es wird ein neuer SOAP-Request an den entsprechenden Service gesendet. Das hat den Grund, dass die genutzte SOAP-Operation des Services die Parameter *TLC* und *JAHR* benötigt, um einen Urlaubsanträge Response zu erhalten. Das heißt es können immer nur Urlaubsanträge eines gesamten Jahres erhalten werden.
+Um die Urlaubsanträge eines bestimmten Jahres in CrewRest anzuzeigen, werden im Gegensatz zu den Filtern für Monat und Status keine vorhandenen Daten gefiltert, sondern es wird ein neuer SOAP-Request an den entsprechenden Service gesendet. Das hat den Grund, dass die genutzte SOAP-Operation des Services die Parameter *TLC* und *JAHR* benötigt, um einen Urlaubsanträge-Response zu erhalten. Das heißt, es können immer nur Urlaubsanträge eines gesamten Jahres erhalten werden.
 
 ### Das Filtern nach Monat und Status
 Wird ein Monat oder Status ausgewählt, wird dem jeweiligen Property (FilterMonat oder FilterStatus) der gewählte Wert der Auswahlliste zugewiesen. Anschließend wird die eigentliche Filterung durch die Methode `urlaubsantraegeFiltern` ausgeführt. Die Methode `urlaubsantraegeFiltern` speichert dann alle gefilterten Urlaubsanträge in eine neue Liste vom Typ `List<urlaubsantrag>`, welche schließlich dem `ItemSource` Property des ListView UI-Elements zugewiesen wird, um die gefilterten Urlaubsanträge anzuzeigen.
 
-Der Button "Reset" setzt die Indizes der Auswahllisten zurück und setzt die das `ItemSource` Property der ListView Komponente wieder auf die ungefilterte Collection zurück. Die Liste wird dann wieder ungefiltert angezeigt.
+Der Button "Reset" setzt die Indizes der Auswahllisten zurück und setzt das `ItemSource` Property der ListView Komponente wieder auf die ungefilterte Collection zurück. Die Liste wird dann wieder ungefiltert angezeigt.
 
 **Antäge Filter in C#**
 ```{#UrlaubsantraegeFilter .cs .numberLines startFrom="1"}
@@ -475,7 +475,7 @@ void urlaubsantraegeFiltern()
 }
 ```
 
-Die folgende Abbildung [Urlaubsanträge gefiltert nach Monat](#Urlaubsanträge gefiltert nach Monat) zeigt die CrewRest App auf Android mit den Urlaubsanträgen aus 2013 gefiltert nach Monat Mai, aus der Sicht eines bestimmten Mitarbeiters.
+Die folgende Abbildung "[Urlaubsanträge gefiltert nach Monat](#Urlaubsanträge gefiltert nach Monat)" zeigt die CrewRest App auf Android mit den Urlaubsanträgen aus 2013 gefiltert nach Monat Mai, aus der Sicht eines bestimmten Mitarbeiters.
 
 \begin{figure}[h]
     \centering
@@ -546,26 +546,24 @@ private void VariabelSwitchCell_OnChanged(object sender, ToggledEventArgs e)
 [^Page]: Die Ansicht einer Seite in der CrewRest App.
 
 ## Dynamisches UI Verhalten und Validierung von Eingaben
-In CrewRest werden "Trigger" und "Behavior" zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Mechanismus ist das Aktivieren und Deaktivieren von Button oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
+In CrewRest werden "Trigger" und "Behavior" zur Sicherstellung korrekter Eingaben eingesetzt. Trigger haben grundsätzlich die Aufgabe Änderungen in der UI zu bewirken, wenn sich ein Property Wert ändert oder ein bestimmtes Event ausgelöst wird [@MicrosoftXamarinBook, S. 835 - 836]. Ein häufiger Anwendungsfall für einen solchen Mechanismus ist das Aktivieren und Deaktivieren von Buttons oder anderen UI-Elementen, basierend auf einer Eingabe oder Auswahl eines Benutzers. Xamarin bietet vier Arten von Triggern an, welche sowohl deklarativ in XAML definiert werden können, als auch programmatisch in C#. Die möglichen Trigger Arten und deren Zweck sind folgende:
 
 \newpage
 
 - Trigger
-    - zum Setzen von Properties bei Änderung eines anderen Property
+    - zum Setzen von Properties bei Änderung eines anderen Property [@MicrosoftXamarinBook, S. 836]
 - EventTrigger
-    - zum Ausführen von Code in Abhängigkeit von einem Event
+    - zum Ausführen von Code in Abhängigkeit von einem Event [@MicrosoftXamarinBook, S. 836]
 - DataTrigger
     - zum Setzen von Properties bei Änderung eines gebundenen Property (DataBinding)
-    - *unterscheidet sich von den Anderen Trigger Arten, da hier ein Property eines anderen Objektes "überwacht" wird* [@MicrosoftXamarinBook, S. 853]
+    - *unterscheidet sich von den anderen Trigger Arten, da hier ein Property eines anderen Objektes "überwacht" wird* [@MicrosoftXamarinBook, S. 853]
 - MultiTrigger
-    - zum Setzen einer Properties bei Änderung einer Menge von anderen Properties
-
-[@MicrosoftXamarinBook, S. 836]
+    - zum Setzen von Properties bei Änderung einer Menge von anderen Properties [@MicrosoftXamarinBook, S. 836]
 
 Behaviors unterscheiden sich von Triggern durch ihre erweiterte Funktionalität. Ein Behavior kann alles was auch ein Trigger kann. Ein Behavior benötigt im Gegensatz zu Triggern aber immer eine programmatische Implementierung in C#. Ist die Umsetzung eines dynamischen UI Verhaltens oder einer Restriktion also mit einem Trigger möglich, wird empfohlen auch einen Trigger statt eines Behaviors zu nutzen [@MicrosoftXamarinBook, S. 868].
 
 ### Trigger in CrewRest
-In CrewRest ist ein DataTrigger angelegt, um beim Hinzufügen von Urlaubsanträgen nur dann das Speichern via *Speichern*-Button zu erlauben, wenn alle Pflichtfelder ausgefüllt sind. Dazu hat der im Button integrierte DataTrigger eine Referenz auf die Textlänge eines Eingabefelds (in diesem Fall auf das Kommentarfeld) und ein Property `Value` mit dem Wert 0. Außerdem einen Setter, welcher die Aktion festlegt wenn der definierte Fall (Textlänge = 0) eintritt. Der `Setter` bewirkt also das Setzen des `IsEnabled` Property des Button auf `False` wenn das Eingabefeld für *Kommentar* leer ist.
+In CrewRest ist ein DataTrigger angelegt, um beim Hinzufügen von Urlaubsanträgen nur dann das Speichern via *Speichern*-Button zu erlauben, wenn alle Pflichtfelder ausgefüllt sind. Dazu hat der im Button integrierte DataTrigger eine Referenz auf die Textlänge eines Eingabefelds (in diesem Fall auf das Kommentarfeld) und ein Property `Value` mit dem Wert 0. Außerdem einen Setter, welcher die Aktion festlegt wenn der definierte Fall (Textlänge = 0) eintritt. Der `Setter` bewirkt also das Setzen der Eigenschaft `IsEnabled` des Button auf `False` wenn das Eingabefeld für *Kommentar* leer ist.
 
 ```{caption="CrewRest DataTrigger" .xml}
 <!-- ... -->
@@ -585,7 +583,7 @@ In CrewRest ist ein DataTrigger angelegt, um beim Hinzufügen von Urlaubsanträg
 ```
 
 ### Behavior in CrewRest
-In CrewRest ist ein Behavior zum Validieren von Datumseingaben implementiert. Ist eine Datumsauswahl erfolgt, wird überprüft ob Datum ein bereits vergangenes ist oder ob das "von Datum" hinter dem "bis Datum" liegt. Trifft eine dieser Bedingungen zu, wird die Hintergrundfarbe des Datumeingabefelds auf Orange oder Rot gesetzt. Die Validation erfolgt in einer extra dafür angelegten Klasse `AntragszeitraumValidator` die die generische Klasse `Behavior<DatePicker>` erweitert, um ein UI-Element vom Typ `DatePicker` prüfen zu können. Die überschriebene Methode `OnAttachedTo(BindableObject)` verweist dann auf die Methode `HandleDateChanged(...)` und übergibt das BindableObject[^BindableObject](die DatePicker Komponente) um die eigentliche Validierungslogik aufzurufen. Um der UI-Komponente *vonDatePicker* vom Typ `DatePicker` ein Behavior zuzuweisen, wird der Name der Klasse über den XML-Tag `<DatePicker.Behaviors>` angegeben. Das Prefix `local` beinhaltet den Namespace in welchem sich die Klasse `AntragszeitraumValidator` befindet und wird im Header der XAML-Page angegeben.
+In CrewRest ist ein Behavior zum Validieren von Datumseingaben implementiert. Ist eine Datumsauswahl erfolgt, wird überprüft ob das Datum ein bereits vergangenes ist oder ob das "von Datum" hinter dem "bis Datum" liegt. Trifft eine dieser Bedingungen zu, wird die Hintergrundfarbe des Datumeingabefelds auf Orange oder Rot gesetzt. Die Validation erfolgt in einer extra dafür angelegten Klasse `AntragszeitraumValidator`, welche die generische Klasse `Behavior<DatePicker>` erweitert, um ein UI-Element vom Typ `DatePicker` prüfen zu können. Die überschriebene Methode `OnAttachedTo(BindableObject)` verweist dann auf die Methode `HandleDateChanged(...)` und übergibt das BindableObject[^BindableObject](die DatePicker Komponente) um die eigentliche Validierungslogik aufzurufen. Um der UI-Komponente *vonDatePicker* vom Typ `DatePicker` ein Behavior zuzuweisen, wird der Name der Klasse über den XML-Tag `<DatePicker.Behaviors>` angegeben. Das Prefix `local` beinhaltet den Namespace in welchem sich die Klasse `AntragszeitraumValidator` befindet und wird im Header der XAML-Page angegeben.
 
 **Behavior in XML**
 ```xml
@@ -614,18 +612,18 @@ void HandleDateChanged(object sender, DateChangedEventArgs e)
 [^BindableObject]: Objekt welches die Zuweisung eines Data Bindings ermöglicht (z.B. eine Xamarin UI-Komponente) [@MicrosoftXamarinBook, S. 234].
 
 ## Hinzufügen von EmbeddedResources zum Anzeigen von Bildern
-Um in einer Xamarin App ein Bild anzuzeigen wird die `Image` Komponente genutzt. Diese Komponente besitzt das Property `Source`, welcher ein Objekt vom Typ `ImageSource` zugewisen wird, um die Quelle des anzuzeigendes Bilds festzulegen. Eine Bild kann aus verschiedene Quellen eingebunden werden, dazu bietet die Klasse `ImageSource` vier unterschiedliche statische Methoden an [@MicrosoftXamarinBook, S. 283]:
+Um in einer Xamarin App ein Bild anzuzeigen wird die `Image` Komponente genutzt. Diese Komponente besitzt die Property `Source`, welcher ein Objekt vom Typ `ImageSource` zugewisen wird, um die Quelle des anzuzeigendes Bildes festzulegen. Eine Bild kann aus verschiedene Quellen eingebunden werden, dazu bietet die Klasse `ImageSource` vier unterschiedliche statische Methoden an [@MicrosoftXamarinBook, S. 283]:
 
 - `FromUri`
     - um ein Bild aus dem Web zu laden und anzuzeigen
 - `FromResource`
     - um ein Bild anzuzeigen welches als EmbeddedResource[^EmbeddedResource] in der PCL abgelegt ist
 - `FromFile`
-    - um ein Bild aus dem jeweiligen gespeichert auf der jeweiligen Plattform anzuzeigen
+    - um ein Bild welches lokal auf der jeweiligen Plattform gespeichert ist anzuzeigen
 - `FromStream`
     - um ein Bild erhalten aus einem `Stream` Objekt des .NET Framewoks anzuzeigen
 
-In CrewRest werden Bilderquellen über die Methode `FromResource` festgelegt. Durch diese Vorgehensweise ist es möglich, die benötigten Bilder in der PCL abzulegen, was dazu führt das die Bilder während dem Buildvorgang an die benötigte Stelle in der Verzeichnisstruktur der jeweiligen App abgelegt werden und somit zugreifbar sind. Würde stattdessen die Methode `FromFile` genutzt, wäre es nötig, die benötigten Bilder redundant in den jeweiligen Projekten für die Plattformen abzulegen. Die beiden Methoden haben ihre Vor- und Nachteile. Ist es beispielsweise gewünscht auf jeder Plattform unterschiedliche Bilder anzuzeigen, macht es mehr Sinn die Methode `FromFile` zu nutzen und die entsprechenden Bilder in den jeweiligen Projekten für die Plattformen abzulegen.
+In CrewRest werden Bilderquellen über die Methode `FromResource` festgelegt. Durch diese Vorgehensweise ist es möglich, die benötigten Bilder in der PCL abzulegen, was dazu führt, dass die Bilder während dem Buildvorgang an die benötigte Stelle in der Verzeichnisstruktur der jeweiligen App abgelegt werden und somit zugreifbar sind. Würde stattdessen die Methode `FromFile` genutzt, wäre es nötig, die benötigten Bilder redundant in den jeweiligen Projekten für die Plattformen abzulegen. Die beiden Methoden haben ihre Vor- und Nachteile. Ist es beispielsweise gewünscht auf jeder Plattform unterschiedliche Bilder anzuzeigen, macht es mehr Sinn die Methode `FromFile` zu nutzen und die entsprechenden Bilder in den jeweiligen Projekten für die Plattformen abzulegen.
 
 Damit das plattformübergreifende Verwenden von Bilder funktioniert und die Bilder während dem Buildvorgang für die jeweilige Plattform integriert werden, müssen alle Bilder via Visual Studio 2015 als "Eingebettete Ressource" angegeben werden. Des Weiteren muss in der Code-Behind Datei der Page auf der ein Bild angezeigt werden soll, ein Property vom Typ `ImageSource` angelegt werden [@MicrosoftXamarinBook, S. 289].
 
@@ -636,11 +634,11 @@ Während der Entwicklung von CrewRest traten verschieden Probleme auf, welche de
 
 **Fehlende ListView Details unter Windows 10**
 
-Die anfänglich verwendete Version des Xamarin.Forms Framework hatte zur Folge das die durch das Property `Details` festgelegten Werte/Daten nicht in der ListView Komponente angezeigt wurden, während unter Android und iOS keine Probleme auftraten. Durch ein Update des Frameworks, welches via NuGet installiert wurde, konnte das Fehlverhalten behoben werden.
+Die anfänglich verwendete Version des Xamarin.Forms Framework hatte zur Folge, dass die durch das Property `Details` festgelegten Werte/Daten nicht in der ListView Komponente angezeigt wurden, während unter Android und iOS keine Probleme auftraten. Durch ein Update des Frameworks, welches via NuGet installiert wurde, konnte das Fehlverhalten behoben werden.
 
 **Unerwartetes Verhalten MasterDetailPage**
 
-In der anfänglichen Implementierung der MasterDetailPage trat ein Problem auf, welches dazu führte das die gesamte MasterDetailPage nicht angzeigt wurde. Der Auslöser des Problems war die fehlende Angabe des Property *Titel* der in der MasterDetailPage liegenden ContentPage. Dieses Verhalten trat während der späteren Entwicklung nicht mehr auf und wurde ggf. auch durch ein Update des Xamarin.Forms Framework beseitigt.
+In der anfänglichen Implementierung der MasterDetailPage trat ein Problem auf, welches dazu führte, dass die gesamte MasterDetailPage nicht angzeigt wurde. Der Auslöser des Problems war die fehlende Angabe des Property *Titel* der in der MasterDetailPage liegenden ContentPage. Dieses Verhalten trat während der späteren Entwicklung nicht mehr auf und wurde ggf. auch durch ein Update des Xamarin.Forms Framework beseitigt.
 
 ## Einbindung einer Drittanbieter Kalender UI-Komponente
 Eine Anforderung an die CrewRest App ist das Anzeigen eines Kalenders in einer Montas- oder Wochenansicht mit speziell gekennzeichneten Tagen. Dieses Feature soll dem Anwender dabei helfen, die Abwesenheitslage von anderen Mitarbeitern überblicken zu können, um gezielt Urlaubsanträge in Zeiträumen mit geringer Anzahl anwesender Mitarbeiter zu verhindern.
