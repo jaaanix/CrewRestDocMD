@@ -640,7 +640,7 @@ Damit das plattformübergreifende Verwenden von Bilder funktioniert und die Bild
 \newpage
 
 ## Einschränkungen und Probleme bei der Cross-Plattform Entwicklung
-Während der Entwicklung von CrewRest traten verschieden Probleme auf, welche den Implementierungsprozess erschwert und/oder verlangsamt haben.
+Während der Entwicklung von CrewRest traten verschiedene Probleme auf, welche den Implementierungsprozess erschwert und/oder verlangsamt haben.
 
 **Fehlende ListView Details unter Windows 10**
 
